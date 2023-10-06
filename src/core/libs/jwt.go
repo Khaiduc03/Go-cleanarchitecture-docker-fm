@@ -18,8 +18,8 @@ type JWTPayload struct {
 	ID          uint   `json:"id"`
 	Email       string `json:"email"`
 	Role        string `json:"role"`
-	Url         string `json:"url"`
 	DeviceToken string `json:"device_token"`
+	
 }
 
 func GenerateToken(payload JWTPayload, tokenType int, config configuration.Config) string {
