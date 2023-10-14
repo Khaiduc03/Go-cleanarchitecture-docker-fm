@@ -17,9 +17,6 @@ func NewHttpResponse(statusCode int, message string, data interface{}) HttpRespo
 
 	// check data is object
 	if _, ok := data.(map[string]interface{}); ok {
-		// convert attribute to camel case
-
-		// var response = ConvertAttribute(data.(map[string]interface{}))
 
 		return HttpResponse{
 			StatusCode: statusCode,
@@ -27,12 +24,6 @@ func NewHttpResponse(statusCode int, message string, data interface{}) HttpRespo
 			Data:       data,
 		}
 	} else {
-		// convert all item in array to camel case
-		// var response []map[string]interface{}
-
-		// for _, item := range data.([]interface{}) {
-		// 	response = append(response, ConvertAttribute(item.(map[string]interface{})))
-		// }
 
 		return HttpResponse{
 			StatusCode: statusCode,

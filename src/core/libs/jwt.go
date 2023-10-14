@@ -19,7 +19,6 @@ type JWTPayload struct {
 	Email       string `json:"email"`
 	Role        string `json:"role"`
 	DeviceToken string `json:"device_token"`
-	
 }
 
 func GenerateToken(payload JWTPayload, tokenType int, config configuration.Config) string {

@@ -1,9 +1,11 @@
 package main
 
 import (
+	Auth "FM/src/auth"
+	AuthImpl "FM/src/auth/implements"
 	"FM/src/configuration"
 	"FM/src/core/exception"
-	"FM/src/core/libs"
+	firebase "FM/src/core/service"
 	"strings"
 	"time"
 
@@ -17,14 +19,18 @@ import (
 
 func main() {
 	config := configuration.NewConfig()
-	 database := configuration.NewDataBase(config)
-	cloud, _err := libs.NewCloudinary(config)
-	if _err != nil {
-		panic(_err)
-	}
+	database := configuration.NewDataBase(config)
+	// cloud, _err := libs.NewCloudinary(config)
+	// if _err != nil {
+	// 	panic(_err)
+	// }
+	firebaseApp := firebase.InitFirebaseAdmin()
+	firebaseAuth := firebase.NewFirebaseAuth(&firebaseApp)
 
+	authRepository := AuthImpl.NewAuthRepositoryImpl(database)
+	authService := AuthImpl.NewAuthServiceImpl(&authRepository)
+	authHandler := Auth.NewAuthHandler(&authService, config, &firebaseAuth)
 	app := fiber.New(configuration.NewFiberConfiguration())
-
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:3000",
@@ -48,6 +54,7 @@ func main() {
 			return strings.Contains(c.Route().Path, "/ws")
 		},
 	}))
+	authHandler.Route(app)
 
 	err := app.Listen(config.Get("SERVER_PORT"))
 

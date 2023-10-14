@@ -16,6 +16,7 @@ const (
 
 type User struct {
 	gorm.Model
+	Name        string `gorm:"column:name;type:varchar(100);"`
 	Email       string `gorm:"column:email;type:varchar(100);unique"`
 	Dob         int64  `gorm:"column:dob;type:bigint;default:0"`
 	PhoneNumber string `gorm:"column:phone_number;type:varchar(12);default:''"`

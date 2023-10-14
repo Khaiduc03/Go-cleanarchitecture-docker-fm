@@ -13,15 +13,15 @@ const (
 )
 
 type FeedBack struct {
-	gorm.Model
-	NameFeedBack string     `gorm:"column:NameFeedBack; type:varchar(100); default:''"`
-	Room         int64      `gorm:"column:dob; type:varchar(24); default:''"`
-	Description  string     `gorm:"column:Description; type:text; default:''"`
-	Status       string     `gorm:"column:Status; type:varchar(24); default:'SEND'"`
-	TimeReq      time.Time  `gorm:"column:TimeReq;  type:bigint;default:0 "`
-	TimeStarted  int64      `gorm:"column:TimeStarted;  type:bigint;  default:0"`
-	TimeFinish   int64      `gorm:"column:TimeFinish;  type:bigint;  default:0"`
-	Category     []Category `gorm:"many2many:feedback_category;"`
+    gorm.Model
+    NameFeedBack string     `gorm:"column:name_feed_back;type:varchar(100);default:''"`
+    Room         int64      `gorm:"column:room;type:bigint;default:0"`
+    Description  string     `gorm:"column:description;type:text;default:''"`
+    Status       string     `gorm:"column:status;type:varchar(24);default:'SEND'"`
+    TimeReq      time.Time  `gorm:"column:time_req"`
+    TimeStarted  int64      `gorm:"column:time_started"`
+    TimeFinish   int64      `gorm:"column:time_finish"`
+    Category     []Category `gorm:"many2many:feedback_categories;"`
 }
 
 func (FeedBack) TableName() string {

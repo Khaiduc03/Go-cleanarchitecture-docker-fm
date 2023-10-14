@@ -16,10 +16,12 @@ const (
 
 type Schedule struct {
 	gorm.Model
-	IDRoom Room   `gorm:"foreignKey:IDRoom;references:ID;"`
-	IDUser User   `gorm:"foreignKey:IDUser;references:ID;"`
-	Date   int64  `gorm:"column:date; type:bigint; default:0"`
-	Shift  uint32 `gorm:"column:shift; type:int; default:1"`
+	IDRoomID uint   `gorm:"column:id_room"`
+	IDUserID uint   `gorm:"column:id_user"`
+	IDRoom   Room   `gorm:"foreignKey:IDRoomID;references:ID"`
+	IDUser   User   `gorm:"foreignKey:IDUserID;references:ID"`
+	Date     int64  `gorm:"column:date;type:bigint;default:0"`
+	Shift    uint32 `gorm:"column:shift;type:int;default:1"`
 }
 
 func (Schedule) TableName() string {

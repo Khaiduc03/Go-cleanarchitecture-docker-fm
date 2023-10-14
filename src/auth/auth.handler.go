@@ -1,4 +1,4 @@
-package auth
+package Auth
 
 import (
 	"FM/src/auth/models"
@@ -6,6 +6,7 @@ import (
 	"FM/src/core/exception"
 	"FM/src/core/http"
 	"FM/src/core/libs"
+	firebase "FM/src/core/service"
 	"FM/src/core/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,24 +15,45 @@ import (
 type AuthHandler struct {
 	AuthService
 	configuration.Config
+	firebase.FirebaseAuth
 }
 
-func NewAuthHandler(authService *AuthService, config configuration.Config) *AuthHandler {
-	return &AuthHandler{AuthService: *authService, Config: config}
+func NewAuthHandler(authService *AuthService, config configuration.Config, firebaseAuth *firebase.FirebaseAuth) *AuthHandler {
+	return &AuthHandler{AuthService: *authService, Config: config, FirebaseAuth: *firebaseAuth}
 }
 
 func (handler AuthHandler) Route(app *fiber.App) {
 	var basePath = utils.GetBaseRoute(handler.Config, "/auth")
 	route := app.Group(basePath)
 
-	route.Post("/sign-in-with-google", handler.SignInWithGoogle)
+	route.Post("/login", handler.SignInWithGoogle)
 }
 
-
 func (handler AuthHandler) SignInWithGoogle(c *fiber.Ctx) error {
-	var model models.SignInWithGoogleModel
-	if err := c.BodyParser(&model); err != nil {
-		return exception.HandleError(c, err)
+
+	if c.Method() != "POST" {
+		return c.Status(fiber.StatusMethodNotAllowed).JSON(http.HttpResponse{
+			StatusCode: fiber.StatusMethodNotAllowed,
+			Message:    "Method Not Allowed",
+		})
+	}
+
+	var requestData struct {
+		IDToken string `json:"idToken"`
+	}
+
+	if err := c.BodyParser(&requestData); err != nil {
+		exception.HandleError(c, err)
+	}
+
+	idToken := requestData.IDToken
+
+	claims, err := handler.FirebaseAuth.VerifyIDToken(c.Context(), idToken)
+	exception.HandleError(c, err)
+
+	model := models.SignInWithGoogleModel{
+		UserID: claims.UserID,
+		Email:  claims.Email,
 	}
 
 	result, err := handler.AuthService.SignInWithGoogle(c.Context(), model)

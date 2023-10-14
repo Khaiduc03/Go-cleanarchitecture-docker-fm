@@ -17,12 +17,12 @@ import (
 
 func NewDataBase(config Config) *gorm.DB {
 	mode := config.Get("MODE")
-	username := config.Get("DATA_SOURCE_USERNAME")
-	password := config.Get("DATA_SOURCE_PASSWORD")
-	host := config.Get("DATA_SOURCE_HOST")
-	port := config.Get("DATA_SOURCE_PORT")
-	dbName := config.Get("DATA_SOURCE_DB_NAME")
-	url := config.Get("POSTGRES_URL")
+	// username := config.Get("postgres")
+	// password := config.Get("DATA_SOURCE_PASSWORD")
+	// host := config.Get("postgres")
+	// port := config.Get("DATA_SOURCE_PORT")
+	// dbName := config.Get("DATA_SOURCE_DB_NAME")
+	//url := config.Get("POSTGRES_URL")
 
 	maxPoolOpen, err := strconv.Atoi(config.Get("DATA_SOURCE_POOL_MAX_CONN"))
 	exception.PanicLogging(err)
@@ -43,11 +43,12 @@ func NewDataBase(config Config) *gorm.DB {
 		},
 	)
 
-	debug := "host=" + host + " user=" + username + " password=" + password + " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
+	// debug := "host=" + host + " user=" + username + " password=" + password + " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
 
+	debug := "host=postgres" + " user=postgres " + " password=postgres" + " dbname=fm" + " port=5432" + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
 	var dsn string
 	if mode == "production" {
-		dsn = url
+		// dsn = url
 	} else {
 		dsn = debug
 	}
@@ -72,6 +73,6 @@ func NewDataBase(config Config) *gorm.DB {
 	db.AutoMigrate(&entities.Rating{})
 	db.AutoMigrate(&entities.Schedule{})
 	db.AutoMigrate(&entities.FeedBack{})
-
+	db.AutoMigrate(&entities.Room{})
 	return db
 }
