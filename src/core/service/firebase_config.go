@@ -12,9 +12,8 @@ import (
 
 func InitFirebaseAdmin() firebase.App {
 	path := path.Join("firebase.json")
-	ctx := context.Background()
 	opt := option.WithCredentialsFile(path)
-	app, err := firebase.NewApp(ctx, nil, opt)
+	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		exception.PanicLogging(err.Error())
 	}
