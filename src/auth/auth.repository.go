@@ -8,5 +8,5 @@ import (
 
 type AuthRepository interface {
 
-	SignInWithGoogle(ctx context.Context, model models.SignInWithGoogleModel) (entities.User, error)
+	SignInWithGoogle(ctx context.Context, model models.Payload) (entities.User, error)
 }

@@ -28,8 +28,8 @@ func main() {
 	firebaseAuth := firebase.NewFirebaseAuth(&firebaseApp)
 
 	authRepository := AuthImpl.NewAuthRepositoryImpl(database)
-	authService := AuthImpl.NewAuthServiceImpl(&authRepository)
-	authHandler := Auth.NewAuthHandler(&authService, config, &firebaseAuth)
+	authService := AuthImpl.NewAuthServiceImpl(&authRepository, &firebaseAuth)
+	authHandler := Auth.NewAuthHandler(&authService, config, )
 	app := fiber.New(configuration.NewFiberConfiguration())
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{

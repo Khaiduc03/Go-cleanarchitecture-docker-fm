@@ -3,29 +3,34 @@ package AuthImpl
 import (
 	Auth "FM/src/auth"
 	"FM/src/auth/models"
-	"FM/src/entities"
+	firebase "FM/src/core/service"
 	"context"
-	"errors"
+	"fmt"
 )
 
 type AuthServiceImpl struct {
 	Auth.AuthRepository
+	firebase.FirebaseAuth
 }
 
-func NewAuthServiceImpl(authRepository *Auth.AuthRepository) Auth.AuthService {
-	return &AuthServiceImpl{AuthRepository: *authRepository}
+func NewAuthServiceImpl(authRepository *Auth.AuthRepository, firebaseAuth *firebase.FirebaseAuth) Auth.AuthService {
+	return &AuthServiceImpl{AuthRepository: *authRepository, FirebaseAuth: *firebaseAuth}
 }
 
-func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, model models.SignInWithGoogleModel) (entities.User, error) {
+func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, idToken string) (models.Payload, error) {
 
-	user, err := authService.AuthRepository.SignInWithGoogle(ctx, model)
+	claims, err := authService.FirebaseAuth.VerifyIDToken(ctx, idToken)
 	if err != nil {
-		return entities.User{}, err
+		fmt.Println(err)
+
 	}
 
-	if err != nil {
-		return entities.User{}, errors.New("invalid password")
+	payload := models.Payload{
+		Name:    claims.Name,
+		Email:   claims.Email,
+		UserID:  claims.UserID,
+		Picture: claims.Picture,
 	}
+	return payload, err
 
-	return user, nil
 }

@@ -1,12 +1,9 @@
 package Auth
 
 import (
-	"FM/src/auth/models"
 	"FM/src/configuration"
 	"FM/src/core/exception"
 	"FM/src/core/http"
-	"FM/src/core/libs"
-	firebase "FM/src/core/service"
 	"FM/src/core/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,11 +12,10 @@ import (
 type AuthHandler struct {
 	AuthService
 	configuration.Config
-	firebase.FirebaseAuth
 }
 
-func NewAuthHandler(authService *AuthService, config configuration.Config, firebaseAuth *firebase.FirebaseAuth) *AuthHandler {
-	return &AuthHandler{AuthService: *authService, Config: config, FirebaseAuth: *firebaseAuth}
+func NewAuthHandler(authService *AuthService, config configuration.Config) *AuthHandler {
+	return &AuthHandler{AuthService: *authService, Config: config}
 }
 
 func (handler AuthHandler) Route(app *fiber.App) {
@@ -48,35 +44,18 @@ func (handler AuthHandler) SignInWithGoogle(c *fiber.Ctx) error {
 
 	idToken := requestData.IDToken
 
-	claims, err := handler.FirebaseAuth.VerifyIDToken(c.Context(), idToken)
-	exception.HandleError(c, err)
-
-	model := models.SignInWithGoogleModel{
-		UserID: claims.UserID,
-		Email:  claims.Email,
-	}
-
-	result, err := handler.AuthService.SignInWithGoogle(c.Context(), model)
-	exception.HandleError(c, err)
-
-	payload := libs.JWTPayload{
-		ID:          result.ID,
-		Email:       result.Email,
-		Role:        result.Role,
-		DeviceToken: result.DeviceToken,
-	}
-
-	accessToken := libs.GenerateToken(payload, libs.AccessToken, handler.Config)
-	refreshToken := libs.GenerateToken(payload, libs.RefreshToken, handler.Config)
-
-	response := models.ResponseSignIn{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+	result, err := handler.AuthService.SignInWithGoogle(c.Context(), idToken)
+	if err != nil {
+		return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
+			StatusCode: fiber.ErrBadRequest.Code,
+			Message:    "Sign in with google failed",
+			Data:       err,
+		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    "Sign in with google successfully",
-		Data:       response,
+		Data:       result,
 	})
 }

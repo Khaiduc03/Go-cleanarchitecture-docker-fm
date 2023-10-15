@@ -23,7 +23,7 @@ func NewAuthRepositoryImpl(DB *gorm.DB) Auth.AuthRepository {
 	}
 }
 
-func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, model models.SignInWithGoogleModel) (entities.User, error) {
+func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, model models.Payload) (entities.User, error) {
 	var user entities.User
 
 	email := model.Email

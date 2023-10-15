@@ -11,7 +11,7 @@ import (
 )
 
 func InitFirebaseAdmin() firebase.App {
-	path := path.Join("firebse.json")
+	path := path.Join("firebase.json")
 	ctx := context.Background()
 	opt := option.WithCredentialsFile(path)
 	app, err := firebase.NewApp(ctx, nil, opt)
@@ -38,4 +38,25 @@ type UserPayload struct {
 	UserID  string `json:"user_id"`
 	Name    string `json:"name"`
 	Picture string `json:"picture"`
+}
+
+func (auth FirebaseAuth) VerifyIDToken(ctx context.Context, idToken string) (UserPayload, error) {
+	token, err := auth.Client.VerifyIDToken(ctx, idToken)
+	if err != nil {
+		return UserPayload{}, err
+	}
+
+	claims := token.Claims
+
+	userID := claims["user_id"].(string)
+	name := claims["name"].(string)
+	email := claims["email"].(string)
+	picture := claims["picture"].(string)
+
+	return UserPayload{
+		UserID:  userID,
+		Name:    name,
+		Email:   email,
+		Picture: picture,
+	}, nil
 }
