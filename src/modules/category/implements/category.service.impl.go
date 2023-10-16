@@ -28,7 +28,8 @@ func(categoryService *CategoryServiceImpl) FindById(ctx context.Context, id int)
 //create category
 
 func(categoryService *CategoryServiceImpl) Create(ctx context.Context, name string) (string, error) {
-	return categoryService.CategoryRepository.Create(ctx, name)
+	response, err := categoryService.CategoryRepository.Create(ctx, name)
+	return response, err
 }
 
 //update category

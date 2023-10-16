@@ -66,14 +66,17 @@ func (handler CategoryHandler) FindById(c *fiber.Ctx) error {
 }
 
 func (handler CategoryHandler) Create(c *fiber.Ctx)error{
-	var name string
-	if err := c.BodyParser(&name); err != nil {
+	var request model.CreateCategoryReq
+	if err := c.BodyParser(&request); err != nil {
 		return exception.HandleError(c, err)
 	}	
-	message, err := handler.CategoryService.Create(c.Context(), name)
+
+	
+	message, err := handler.CategoryService.Create(c.Context(), request.Name)
 	if(err != nil){
 		return exception.HandleError(c, err)
 	}
+
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    message,

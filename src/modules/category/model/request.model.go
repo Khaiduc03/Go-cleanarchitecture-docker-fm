@@ -7,5 +7,4 @@ type UpdateCategoryReq struct {
 
 type CreateCategoryReq struct {
 	Name       string `json:"name"`
-	FeedBackID int    `json:"feedback_id"`
 }

@@ -35,15 +35,15 @@ func (categoryRepository *CategoryRepositoryImpl) FindById(ctx context.Context, 
 
 func (categoryRepository *CategoryRepositoryImpl) Create(ctx context.Context, name string) (string, error) {
 	var category entities.Category
-	isExist := categoryRepository.DB.WithContext(ctx).Where("name = ? ", name).Find(&category)
+	isExist := categoryRepository.DB.WithContext(ctx).Where("category_name = ? ", name).Find(&category)
 	if isExist.RowsAffected != 0 {
 		return "", errors.New("category is exist")
 	}
 
 	category = entities.Category{CategoryName: name}
-	err := categoryRepository.DB.WithContext(ctx).Create(&category)
+	err := categoryRepository.DB.WithContext(ctx).Create(&category).Error
 	if err != nil {
-		return "", err.Error
+		return "", err
 	}
 
 	return "Create category successfully", nil
