@@ -20,10 +20,8 @@ func NewAuthServiceImpl(authRepository *Auth.AuthRepository, firebaseAuth *fireb
 func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, idToken string) (models.Payload, error) {
 
 	claims, err := authService.FirebaseAuth.VerifyIDToken(ctx, idToken)
-	fmt.Println(claims.UserID)
 	if err != nil {
 		fmt.Println(err)
-
 	}
 
 	payload := models.Payload{

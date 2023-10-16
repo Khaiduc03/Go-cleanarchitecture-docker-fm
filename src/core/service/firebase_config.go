@@ -13,6 +13,9 @@ import (
 func InitFirebaseAdmin() firebase.App {
 	path := path.Join("firebase.json")
 	opt := option.WithCredentialsFile(path)
+	// conf := &firebase.Config{
+	// 	ServiceAccountID: "firebase-adminsdk-n15fz@fmanager-795a5.iam.gserviceaccount.com",
+	// }
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		exception.PanicLogging(err.Error())

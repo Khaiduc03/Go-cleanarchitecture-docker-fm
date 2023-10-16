@@ -6,6 +6,8 @@ import (
 	"FM/src/configuration"
 	"FM/src/core/exception"
 	firebase "FM/src/core/service"
+	"FM/src/modules/category"
+	CategoryImpl "FM/src/modules/category/implements"
 	"strings"
 	"time"
 
@@ -29,7 +31,12 @@ func main() {
 
 	authRepository := AuthImpl.NewAuthRepositoryImpl(database)
 	authService := AuthImpl.NewAuthServiceImpl(&authRepository, &firebaseAuth)
-	authHandler := Auth.NewAuthHandler(&authService, config, )
+	authHandler := Auth.NewAuthHandler(&authService, config )
+
+	categoryRepository := CategoryImpl.NewCategoryRepositoryImpl(database)
+	categoryService := CategoryImpl.NewCategoryServiceImpl(&categoryRepository)
+	categoryHandler := category.NewCategoryHandler(&categoryService, config)
+	
 	app := fiber.New(configuration.NewFiberConfiguration())
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{
@@ -55,7 +62,7 @@ func main() {
 		},
 	}))
 	authHandler.Route(app)
-
+	categoryHandler.Route(app)
 	err := app.Listen(config.Get("SERVER_PORT"))
 
 	exception.PanicLogging(err)

@@ -7,14 +7,11 @@ import (
 	"FM/src/auth/models"
 	"FM/src/entities"
 
-	firebase "firebase.google.com/go/v4"
-
 	"gorm.io/gorm"
 )
 
 type AuthRepositoryImpl struct {
 	*gorm.DB
-	*firebase.App
 }
 
 func NewAuthRepositoryImpl(DB *gorm.DB) Auth.AuthRepository {
