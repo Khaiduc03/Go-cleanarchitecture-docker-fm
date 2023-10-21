@@ -12,4 +12,5 @@ type CategoryRepository interface {
 	Create(ctx context.Context, name string) (string, error)
 	Update(ctx context.Context,model model.UpdateCategoryReq) (string, error)
 	Delete(ctx context.Context, id int) (string, error)
+	
 }

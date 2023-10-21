@@ -1,10 +1,8 @@
 version: "3.8"
 services:
   fiber:
-    container_name: fiber-fm
-    build:
-      context: .
-      dockerfile: Dockerfile
+    container_name: fm-fiber
+    image: fm-fiber:${MODE}
     ports:
       - ${SERVER_PORT}:7000
     volumes:
@@ -18,9 +16,10 @@ services:
       POSTGRES_DB: fm
 
   postgres:
+    container_name: fm-postgres
     image: postgres:16.0-alpine
     ports:
-      - ${DATA_SOURCE_PORT}:${DATA_SOURCE_PORT_DOCKER}
+      - ${POSTGRES_PORT}:${POSTGRES_PORT_DOCKER}
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -38,3 +37,4 @@ services:
 
 volumes:
   postgres:
+

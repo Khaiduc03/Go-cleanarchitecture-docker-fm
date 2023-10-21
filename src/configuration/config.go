@@ -9,6 +9,8 @@ import (
 
 type Config interface {
 	Get(key string) string
+	
+	
 }
 
 type ConfigImpl struct{}

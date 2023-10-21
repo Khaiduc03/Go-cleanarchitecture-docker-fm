@@ -6,4 +6,5 @@ import (
 
 func NewFiberConfiguration() fiber.Config {
 	return fiber.Config{}
+	
 }

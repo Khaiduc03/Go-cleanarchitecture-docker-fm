@@ -2,7 +2,7 @@ package configuration
 
 import (
 	"FM/src/core/exception"
-	"FM/src/entities"
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -16,14 +16,13 @@ import (
 )
 
 func NewDataBase(config Config) *gorm.DB {
-	mode := config.Get("MODE")
-	// username := config.Get("postgres")
-	// password := config.Get("DATA_SOURCE_PASSWORD")
-	// host := config.Get("postgres")
-	// port := config.Get("DATA_SOURCE_PORT")
-	// dbName := config.Get("DATA_SOURCE_DB_NAME")
-	//url := config.Get("POSTGRES_URL")
-
+	username := config.Get("POSTGRES_USER")
+	password := config.Get("POSTGRES_PASSWORD")
+	host := config.Get("POSTGRES_HOST")
+	port := config.Get("POSTGRES_PORT")
+	dbName := config.Get("POSTGRES_DB")
+	TYPE := config.Get("MODE")
+	fmt.Print(TYPE)
 	maxPoolOpen, err := strconv.Atoi(config.Get("DATA_SOURCE_POOL_MAX_CONN"))
 	exception.PanicLogging(err)
 
@@ -31,6 +30,7 @@ func NewDataBase(config Config) *gorm.DB {
 	exception.PanicLogging(err)
 
 	maxPollLifeTime, err := strconv.Atoi(config.Get("DATA_SOURCE_POOL_LIFE_TIME"))
+
 	exception.PanicLogging(err)
 
 	loggerDb := logger.New(
@@ -43,15 +43,10 @@ func NewDataBase(config Config) *gorm.DB {
 		},
 	)
 
-	// debug := "host=" + host + " user=" + username + " password=" + password + " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
+	debug := "host=" + host + " user=" + username + " password=" + password + " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
 
-	debug := "host=postgres" + " user=postgres " + " password=postgres" + " dbname=fm" + " port=5432" + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
-	var dsn string
-	if mode == "production" {
-		// dsn = url
-	} else {
-		dsn = debug
-	}
+	//debug := "host=postgres" + " user=postgres " + " password=postgres" + " dbname=fm" + " port=5432" + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
+	var dsn string = debug
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: loggerDb,
@@ -66,13 +61,13 @@ func NewDataBase(config Config) *gorm.DB {
 	sqlDB.SetConnMaxLifetime(time.Duration(rand.Int31n(int32(maxPollLifeTime))) * time.Millisecond)
 
 	// auto migrate
-	db.AutoMigrate(&entities.User{})
-	db.AutoMigrate(&entities.Category{})
-	db.AutoMigrate(&entities.User{})
-	db.AutoMigrate(&entities.Image{})
-	db.AutoMigrate(&entities.Rating{})
-	db.AutoMigrate(&entities.Schedule{})
-	db.AutoMigrate(&entities.FeedBack{})
-	db.AutoMigrate(&entities.Room{})
+	// db.AutoMigrate(&entities.User{})
+	// db.AutoMigrate(&entities.Category{})
+	// db.AutoMigrate(&entities.User{})
+	// db.AutoMigrate(&entities.Image{})
+	// db.AutoMigrate(&entities.Rating{})
+	// db.AutoMigrate(&entities.Schedule{})
+	// db.AutoMigrate(&entities.FeedBack{})
+	// db.AutoMigrate(&entities.Room{})
 	return db
 }
