@@ -1,10 +1,12 @@
 package Auth
 
 import (
+	"FM/src/auth/models"
 	"FM/src/configuration"
 	"FM/src/core/exception"
 	"FM/src/core/http"
 	"FM/src/core/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -34,17 +36,14 @@ func (handler AuthHandler) SignInWithGoogle(c *fiber.Ctx) error {
 		})
 	}
 
-	var requestData struct {
-		IDToken string `json:"idToken"`
-	}
+	var requestData = models.SignInWithGoogleModles{}
 
 	if err := c.BodyParser(&requestData); err != nil {
 		exception.HandleError(c, err)
 	}
 
-	idToken := requestData.IDToken
-
-	result, err := handler.AuthService.SignInWithGoogle(c.Context(), idToken)
+	result, err := handler.AuthService.SignInWithGoogle(c.Context(), requestData)
+	//fmt.Println(result)
 	if err != nil {
 		return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 			StatusCode: fiber.ErrBadRequest.Code,
@@ -53,9 +52,11 @@ func (handler AuthHandler) SignInWithGoogle(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
+	//check result is empty
+	fmt.Println(result)
+
+	return c.Status(fiber.StatusOK).JSON(http.HttpResponseNoData{
 		StatusCode: fiber.StatusOK,
 		Message:    "Sign in with google successfully",
-		Data:       result,
 	})
 }

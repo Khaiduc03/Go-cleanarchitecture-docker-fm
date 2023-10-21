@@ -6,6 +6,11 @@ type HttpResponse struct {
 	Data       interface{} `json:"data"`
 }
 
+type HttpResponseNoData struct {
+	StatusCode int         `json:"statusCode"`
+	Message    string      `json:"message"`
+}
+
 func NewHttpResponse(statusCode int, message string, data interface{}) HttpResponse {
 	if data == nil {
 		return HttpResponse{

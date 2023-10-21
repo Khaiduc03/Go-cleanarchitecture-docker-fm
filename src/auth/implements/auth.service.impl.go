@@ -2,10 +2,12 @@ package AuthImpl
 
 import (
 	Auth "FM/src/auth"
-	"FM/src/auth/models"
+	models "FM/src/auth/models"
 	firebase "FM/src/core/service"
+	"FM/src/entities"
 	"context"
-	"fmt"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type AuthServiceImpl struct {
@@ -17,19 +19,27 @@ func NewAuthServiceImpl(authRepository *Auth.AuthRepository, firebaseAuth *fireb
 	return &AuthServiceImpl{AuthRepository: *authRepository, FirebaseAuth: *firebaseAuth}
 }
 
-func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, idToken string) (models.Payload, error) {
+func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req models.SignInWithGoogleModles) (entities.User, error) {
+	idToken := req.IDToken
+	position := req.Position
 
-	claims, err := authService.FirebaseAuth.VerifyIDToken(ctx, idToken)
+	tokenString, err := jwt.Parse(idToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte("18723735524-8qe3014rf4goh1ck0o6lp07tn7c0965q.apps.googleusercontent.com"), nil
+	})
+
 	if err != nil {
-		fmt.Println(err)
+
 	}
+
+	claims := tokenString.Claims.(jwt.MapClaims)
 
 	payload := models.Payload{
-		Name:    claims.Name,
-		Email:   claims.Email,
-		UserID:  claims.UserID,
-		Picture: claims.Picture,
+		Name:     claims["name"].(string),
+		Email:    claims["email"].(string),
+		Picture:  claims["picture"].(string),
+		Position: position,
 	}
-	return payload, err
+	//fmt.Print(payload)
 
+	return authService.AuthRepository.SignInWithGoogle(ctx, payload)
 }

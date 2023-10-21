@@ -1,12 +1,13 @@
 package models
 
-type SignInWithGoogleModel struct {
-	idToken string `json:"idToken"`
+type SignInWithGoogleModles struct {
+	IDToken  string `json:"idToken"`
+	Position string `json:"position"`
 }
 
 type Payload struct {
-	UserID  string `json:"user_id"`
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Picture string `json:"picture"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Picture  string `json:"picture"`
+	Position string `json:"position"`
 }

@@ -2,9 +2,11 @@ package AuthImpl
 
 import (
 	"context"
+	"fmt"
 
 	Auth "FM/src/auth"
 	"FM/src/auth/models"
+
 	"FM/src/entities"
 
 	"gorm.io/gorm"
@@ -20,10 +22,12 @@ func NewAuthRepositoryImpl(DB *gorm.DB) Auth.AuthRepository {
 	}
 }
 
-func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, model models.Payload) (entities.User, error) {
+func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, req models.Payload) (entities.User, error) {
 	var user entities.User
+	fmt.Print(req)
 
-	email := model.Email
+	fmt.Print("hihi")
+	email := req.Email
 	isExist := authRepository.DB.WithContext(ctx).Where("email = ?", email).Find(&user)
 
 	if isExist.Error != nil {
@@ -32,9 +36,10 @@ func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, 
 
 	if isExist.RowsAffected == 0 {
 		newUser := entities.User{
-			Email: email,
-			Url:   model.Picture,
-			Name:  model.Name,
+			Email:    email,
+			Url:      req.Picture,
+			Name:     req.Name,
+			Position: req.Position,
 		}
 
 		result := authRepository.DB.WithContext(ctx).Create(&newUser)
@@ -43,8 +48,8 @@ func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, 
 		}
 		user = newUser
 	} else {
-		user.Url = model.Picture
-		user.Name = model.Name
+		user.Url = req.Picture
+		user.Name = req.Name
 		result := authRepository.DB.WithContext(ctx).Save(&user)
 		if result.Error != nil {
 			return entities.User{}, result.Error

@@ -5,6 +5,9 @@ restart:
 start:
 	sudo docker start FM
 
+prod:
+	go run cmd/main.go
+
 down:
 	sudo docker stop postgres
 
