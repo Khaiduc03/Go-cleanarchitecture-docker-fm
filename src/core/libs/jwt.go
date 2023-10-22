@@ -72,7 +72,6 @@ func VerifyToken(tokenString string, tokenType int, config configuration.Config)
 	} else if tokenType == RefreshToken {
 		jwtSecret = refreshTokenSecret
 	}
-
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(jwtSecret), nil
 	})

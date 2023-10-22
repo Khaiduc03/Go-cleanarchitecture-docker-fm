@@ -8,4 +8,5 @@ import (
 
 type AuthService interface {
 	SignInWithGoogle(ctx context.Context, req models.SignInWithGoogleModles) (entities.User, error)
+
 }

@@ -6,6 +6,7 @@ import (
 	firebase "FM/src/core/service"
 	"FM/src/entities"
 	"context"
+	"fmt"
 
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -26,6 +27,8 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 	tokenString, err := jwt.Parse(idToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte("18723735524-8qe3014rf4goh1ck0o6lp07tn7c0965q.apps.googleusercontent.com"), nil
 	})
+	fmt.Print(err)
+
 
 	if err.Error() != "key is of invalid type" {
 		return entities.User{}, err

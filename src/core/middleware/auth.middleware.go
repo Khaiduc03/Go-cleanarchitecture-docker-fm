@@ -20,8 +20,8 @@ func AuthMiddleware(config configuration.Config) func(*fiber.Ctx) error {
 				Data:       nil,
 			})
 		}
-		token := strings.Split(header, " ")[1]
 
+		token := strings.Split(header, " ")[1]
 		if token == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(http.HttpResponse{
 				StatusCode: fiber.StatusUnauthorized,

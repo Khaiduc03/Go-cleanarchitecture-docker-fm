@@ -25,13 +25,13 @@ func (handler CategoryHandler) Route(app *fiber.App) {
 	var basePath = utils.GetBaseRoute(handler.Config, "/category")
 
 	route := app.Group(basePath, middleware.AuthMiddleware(handler.Config), middleware.RoleMiddleware([]string{"TEACHER"}))
-
+	route.Get("/type", handler.FindAllByType)
 	route.Get("/", handler.FindAll)
 	route.Get("/:id", handler.FindById)
-	route.Get("/type/:type", handler.FindAllCategoryByType)
 	route.Post("/", handler.Create)
 	route.Put("/", handler.Update)
 	route.Delete("/:id", handler.Delete)
+
 }
 
 func (handler CategoryHandler) FindAll(c *fiber.Ctx) error {
@@ -116,16 +116,13 @@ func (handler CategoryHandler) Delete(c *fiber.Ctx) error {
 	})
 }
 
-func (handler CategoryHandler) FindAllCategoryByType(c *fiber.Ctx) error {
-	categoryType := c.Query("type")
-	categories, err := handler.CategoryService.FindAllCategoryByType(c.Context(), categoryType)
-	if err != nil {
-		return exception.HandleError(c, err)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
-		StatusCode: fiber.StatusOK,
-		Message:    "Get all category successfully",
-		Data:       categories,
+func (handler CategoryHandler) FindAllByType(c *fiber.Ctx) error {
+	idStr := c.Query("type")
+	return c.Status(fiber.StatusBadRequest).JSON(http.HttpResponse{
+		StatusCode: fiber.StatusBadRequest,
+		Message:    "Invalid type parameter: " + idStr,
 	})
+
+	// If id is a valid integer, you can use it here
+
 }
