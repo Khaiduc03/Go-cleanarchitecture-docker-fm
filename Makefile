@@ -19,5 +19,7 @@ push:
 	git add .
 	git commit -m "$(m)"
 	git push
-
+	./scripts/push.sh
+build:
+	sudo docker push mujag/fm-fiber:prod 
 
