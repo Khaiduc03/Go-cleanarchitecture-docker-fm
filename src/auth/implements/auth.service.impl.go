@@ -27,7 +27,7 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 		return []byte("18723735524-8qe3014rf4goh1ck0o6lp07tn7c0965q.apps.googleusercontent.com"), nil
 	})
 
-	if err != nil {
+	if err.Error() != "key is of invalid type" {
 		return entities.User{}, err
 	}
 
@@ -39,7 +39,7 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 		Picture:  claims["picture"].(string),
 		Position: position,
 	}
-	//fmt.Print(payload)
+
 
 	return authService.AuthRepository.SignInWithGoogle(ctx, payload)
 }

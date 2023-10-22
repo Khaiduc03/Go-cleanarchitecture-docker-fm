@@ -1,4 +1,4 @@
-package model
+package modelCategory
 
 type UpdateCategoryReq struct {
 	ID   int    `json:"id"`

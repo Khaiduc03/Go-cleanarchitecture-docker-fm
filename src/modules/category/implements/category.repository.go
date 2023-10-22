@@ -1,4 +1,4 @@
-package CategoryImpl
+package categoryImpl
 
 import (
 	"FM/src/entities"
@@ -49,7 +49,7 @@ func (categoryRepository *CategoryRepositoryImpl) Create(ctx context.Context, na
 	return "Create category successfully", nil
 }
 
-func (categoryRepository *CategoryRepositoryImpl) Update(ctx context.Context, model model.UpdateCategoryReq) (string, error) {
+func (categoryRepository *CategoryRepositoryImpl) Update(ctx context.Context, model modelCategory.UpdateCategoryReq) (string, error) {
 	var category entities.Category
 
 	result := categoryRepository.DB.WithContext(ctx).Where("id = ?", model.ID).First(&category)

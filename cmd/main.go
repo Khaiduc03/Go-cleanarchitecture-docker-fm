@@ -7,7 +7,7 @@ import (
 	"FM/src/core/exception"
 	firebase "FM/src/core/service"
 	"FM/src/modules/category"
-	CategoryImpl "FM/src/modules/category/implements"
+	categoryImpl "FM/src/modules/category/implements"
 	"strings"
 	"time"
 
@@ -31,12 +31,12 @@ func main() {
 
 	authRepository := AuthImpl.NewAuthRepositoryImpl(database)
 	authService := AuthImpl.NewAuthServiceImpl(&authRepository, &firebaseAuth)
-	authHandler := Auth.NewAuthHandler(&authService, config )
+	authHandler := Auth.NewAuthHandler(&authService, config)
 
-	categoryRepository := CategoryImpl.NewCategoryRepositoryImpl(database)
-	categoryService := CategoryImpl.NewCategoryServiceImpl(&categoryRepository)
+	categoryRepository := categoryImpl.NewCategoryRepositoryImpl(database)
+	categoryService := categoryImpl.NewCategoryServiceImpl(&categoryRepository)
 	categoryHandler := category.NewCategoryHandler(&categoryService, config)
-	
+
 	app := fiber.New(configuration.NewFiberConfiguration())
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{

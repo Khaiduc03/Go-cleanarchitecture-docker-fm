@@ -8,8 +8,8 @@ type Image struct {
 	gorm.Model
 	PublicID   string   `gorm:"column:public_id;type:varchar(100);default:''"`
 	Url        string   `gorm:"column:url;type:varchar(100);default:''"`
-	IDFeedback uint     `gorm:"column:id_feedback"`
-	FeedBack   FeedBack `gorm:"foreignKey:IDFeedback;references:ID"`
+	FeedbackID uint     `gorm:"column:feedback_id"`
+	FeedBack   FeedBack `gorm:"foreignKey:FeedbackID;references:ID"`
 }
 
 func (Image) TableName() string {

@@ -6,7 +6,7 @@ import (
 	"FM/src/core/http"
 	"FM/src/core/middleware"
 	"FM/src/core/utils"
-	"FM/src/modules/category/model"
+	modelCategory "FM/src/modules/category/model"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -67,7 +67,7 @@ func (handler CategoryHandler) FindById(c *fiber.Ctx) error {
 }
 
 func (handler CategoryHandler) Create(c *fiber.Ctx) error {
-	var request model.CreateCategoryReq
+	var request modelCategory.CreateCategoryReq
 	if err := c.BodyParser(&request); err != nil {
 		return exception.HandleError(c, err)
 	}
@@ -84,7 +84,7 @@ func (handler CategoryHandler) Create(c *fiber.Ctx) error {
 }
 
 func (handler CategoryHandler) Update(c *fiber.Ctx) error {
-	var model model.UpdateCategoryReq
+	var model modelCategory.UpdateCategoryReq
 	if err := c.BodyParser(&model); err != nil {
 		return exception.HandleError(c, err)
 	}

@@ -1,10 +1,27 @@
-FROM golang:1.21-alpine as builder
+
+FROM golang:1.21-alpine AS api
 
 WORKDIR /app
 
-RUN go install github.com/cosmtrek/air@latest
-
 COPY go.mod go.sum ./
+
 RUN go mod download
 
-CMD ["air", "-c", ".air.toml"]
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/main.go
+
+FROM scratch AS prod
+
+WORKDIR /app
+
+COPY --from=api /app/main .
+
+COPY --from=api /app/.env .
+
+COPY --from=api /app/firebase.json .
+
+EXPOSE 7000
+
+CMD ["./main"]
+
