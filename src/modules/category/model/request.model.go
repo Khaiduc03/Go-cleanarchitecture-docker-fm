@@ -6,5 +6,6 @@ type UpdateCategoryReq struct {
 }
 
 type CreateCategoryReq struct {
-	Name       string `json:"name"`
+	Name string `json:"name"`
+	Type string `json:"type"`
 }

@@ -28,8 +28,8 @@ func (categoryService *CategoryServiceImpl) FindById(ctx context.Context, id int
 
 //create category
 
-func (categoryService *CategoryServiceImpl) Create(ctx context.Context, name string) (string, error) {
-	response, err := categoryService.CategoryRepository.Create(ctx, name)
+func (categoryService *CategoryServiceImpl) Create(ctx context.Context, req modelCategory.CreateCategoryReq) (string, error) {
+	response, err := categoryService.CategoryRepository.Create(ctx, req)
 	return response, err
 }
 
@@ -43,3 +43,8 @@ func (categoryService *CategoryServiceImpl) Update(ctx context.Context, model mo
 func (categoryService *CategoryServiceImpl) Delete(ctx context.Context, id int) (string, error) {
 	return categoryService.CategoryRepository.Delete(ctx, id)
 }
+
+func (categoryService *CategoryServiceImpl) FindAllCategoryByType(ctx context.Context, categoryType string) ([]entities.Category, error) {
+	return categoryService.CategoryRepository.FindAllCategoryByType(ctx, categoryType)
+}
+

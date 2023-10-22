@@ -57,7 +57,9 @@ func (handler AuthHandler) SignInWithGoogle(c *fiber.Ctx) error {
 		PhoneNumber: result.PhoneNumber,
 		Url:         result.Url,
 		Position:    result.Position,
+		Role:        result.Role,
 	}
+
 	accessToken := libs.GenerateToken(payload, libs.AccessToken, handler.Config)
 	refreshToken := libs.GenerateToken(payload, libs.RefreshToken, handler.Config)
 

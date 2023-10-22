@@ -20,7 +20,6 @@ type FeedBack struct {
 	TimeReq      time.Time  `gorm:"column:time_req"`
 	TimeStarted  int64      `gorm:"column:time_started"`
 	TimeFinish   int64      `gorm:"column:time_finish"`
-	Category     []Category `gorm:"many2many:feedback_category;"`
 	Room         Room       `gorm:"foreignKey:room_id;references:ID"`
 	RoomID       uint       `gorm:"column:room_id"`
     User         User       `gorm:"foreignKey:UserID;references:ID"`

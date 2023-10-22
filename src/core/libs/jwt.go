@@ -20,6 +20,7 @@ type JWTPayload struct {
 	PhoneNumber string `json:"phone_number"`
 	Url         string `json:"url"`
 	Position    string `json:"position"`
+	Role        string `json:"role"`
 }
 
 func GenerateToken(payload JWTPayload, tokenType int, config configuration.Config) string {
@@ -35,6 +36,10 @@ func GenerateToken(payload JWTPayload, tokenType int, config configuration.Confi
 
 	claims["id"] = payload.ID
 	claims["email"] = payload.Email
+	claims["phone_number"] = payload.PhoneNumber
+	claims["url"] = payload.Url
+	claims["position"] = payload.Position
+	claims["role"] = payload.Role
 
 	var jwtSecret string
 	var expired int64
