@@ -5,8 +5,8 @@ import (
 	"FM/src/configuration"
 	"FM/src/core/exception"
 	"FM/src/core/http"
+	"FM/src/core/libs"
 	"FM/src/core/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -51,12 +51,24 @@ func (handler AuthHandler) SignInWithGoogle(c *fiber.Ctx) error {
 			Data:       err,
 		})
 	}
+	payload := libs.JWTPayload{
+		ID:          result.ID,
+		Email:       result.Email,
+		PhoneNumber: result.PhoneNumber,
+		Url:         result.Url,
+		Position:    result.Position,
+	}
+	accessToken := libs.GenerateToken(payload, libs.AccessToken, handler.Config)
+	refreshToken := libs.GenerateToken(payload, libs.RefreshToken, handler.Config)
 
-	//check result is empty
-	fmt.Println(result)
+	response := models.ResponseSignIn{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}
 
-	return c.Status(fiber.StatusOK).JSON(http.HttpResponseNoData{
+	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    "Sign in with google successfully",
+		Data:       response,
 	})
 }

@@ -6,8 +6,8 @@ check_image_exist() {
        echo "Image already exist"
         sudo docker push mujag/fm-fiber:prod
     else
-     docker build -t mujag/fm-fiber:prod -f Dockerfile.prod .
-     docker push mujag/fm-fiber:prod
+     sudo docker build -t mujag/fm-fiber:prod -f Dockerfile.prod .
+     sudo docker push mujag/fm-fiber:prod
     fi
 }
 
