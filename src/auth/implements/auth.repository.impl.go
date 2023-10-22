@@ -26,7 +26,6 @@ func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, 
 	var user entities.User
 	fmt.Print(req)
 
-	fmt.Print("hihi")
 	email := req.Email
 	isExist := authRepository.DB.WithContext(ctx).Where("email = ?", email).Find(&user)
 
@@ -40,6 +39,7 @@ func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, 
 			Url:      req.Picture,
 			Name:     req.Name,
 			Position: req.Position,
+			Role:     entities.TEACHER,
 		}
 
 		result := authRepository.DB.WithContext(ctx).Create(&newUser)

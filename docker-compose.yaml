@@ -2,7 +2,7 @@ version: "3.8"
 services:
   fiber:
     container_name: fm-fiber
-    image: fm-fiber:${MODE}
+    image: mujag/fm-fiber:${MODE}
     ports:
       - ${SERVER_PORT}:7000
     volumes:

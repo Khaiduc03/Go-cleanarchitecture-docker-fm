@@ -4,6 +4,7 @@ import (
 	"FM/src/configuration"
 	"FM/src/core/exception"
 	"FM/src/core/http"
+	"FM/src/core/middleware"
 	"FM/src/core/utils"
 	"FM/src/modules/category/model"
 	"strconv"
@@ -23,7 +24,7 @@ func NewCategoryHandler(categoryService *CategoryService, config configuration.C
 func (handler CategoryHandler) Route(app *fiber.App) {
 	var basePath = utils.GetBaseRoute(handler.Config, "/category")
 
-	route := app.Group(basePath)
+	route := app.Group(basePath, middleware.AuthMiddleware(handler.Config), middleware.RoleMiddleware([]string{"TEACHER"}))
 
 	route.Get("/", handler.FindAll)
 	route.Get("/:id", handler.FindById)

@@ -1,8 +1,12 @@
 
 
-mujag/fm-fiber
+TYPE=$1
+change_mode() {
+    sed -i "s/MODE=.*/MODE=$TYPE/" .env
+}
+
 check_image_exist() {
-    local image_name="mujag/fm-fiber:prod"
+    local image_name="mujag/fm-fiber:$TYPE"
     if [ $(sudo docker images -q $image_name) ]; then
        echo "Image already exist"
     else

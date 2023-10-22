@@ -28,7 +28,7 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 	})
 
 	if err != nil {
-
+		return entities.User{}, err
 	}
 
 	claims := tokenString.Claims.(jwt.MapClaims)
