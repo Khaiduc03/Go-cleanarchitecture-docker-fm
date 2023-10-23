@@ -20,6 +20,10 @@ push:
 	git commit -m "$(m)"
 	git push
 	./scripts/push.sh
+#to run this command you need run script make chmod
 build:
 	sudo docker push mujag/fm-fiber:prod 
+
+chmod:
+	sudo chmod +x ./scripts/push.sh
 
