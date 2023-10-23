@@ -5,6 +5,7 @@ import (
 	"FM/src/core/exception"
 	"FM/src/core/http"
 	"FM/src/core/middleware"
+	"FM/src/core/shared"
 	"FM/src/core/utils"
 	modelCategory "FM/src/modules/category/model"
 	"strconv"
@@ -67,10 +68,15 @@ func (handler CategoryHandler) FindById(c *fiber.Ctx) error {
 }
 
 func (handler CategoryHandler) Create(c *fiber.Ctx) error {
+	validator := shared.NewValidator()
 	var request modelCategory.CreateCategoryReq
 	if err := c.BodyParser(&request); err != nil {
 		return exception.HandleError(c, err)
 	}
+	if err := validator.Validate(request); err != nil {
+		return exception.HandleErrorCustomMessage(c, "Missing required fields")
+	}
+
 
 	message, err := handler.CategoryService.Create(c.Context(), request)
 	if err != nil {
@@ -84,14 +90,23 @@ func (handler CategoryHandler) Create(c *fiber.Ctx) error {
 }
 
 func (handler CategoryHandler) Update(c *fiber.Ctx) error {
+
+	validator := shared.NewValidator()
+
 	var model modelCategory.UpdateCategoryReq
 	if err := c.BodyParser(&model); err != nil {
 		return exception.HandleError(c, err)
 	}
+
+	if err := validator.Validate(model); err != nil {
+		return exception.HandleErrorCustomMessage(c, "Missing required fields")
+	}
+
 	message, err := handler.CategoryService.Update(c.Context(), model)
 	if err != nil {
 		return exception.HandleError(c, err)
 	}
+
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    message,

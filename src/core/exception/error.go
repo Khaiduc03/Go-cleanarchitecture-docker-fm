@@ -23,3 +23,11 @@ func HandleError(c *fiber.Ctx, err error) error {
 
 	return nil
 }
+
+func HandleErrorCustomMessage(c *fiber.Ctx, err string) error {
+	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
+		StatusCode: fiber.StatusBadRequest,
+		Message:    err,
+		Data:       nil,
+	})
+}

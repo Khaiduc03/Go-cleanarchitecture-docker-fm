@@ -1,11 +1,13 @@
 package modelCategory
 
+
+
 type UpdateCategoryReq struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   int    `json:"id" validate:"required,gte=1"`
+	Name string `json:"name" validate:"required"`
 }
 
 type CreateCategoryReq struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Name string `json:"name" validate:"required"`
+	Type string `json:"type" validate:"required,oneof=report support"`
 }

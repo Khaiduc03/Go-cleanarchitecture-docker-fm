@@ -4,7 +4,6 @@ import (
 	Auth "FM/src/auth"
 	models "FM/src/auth/models"
 	"FM/src/core/firebase"
-
 	"FM/src/entities"
 	"context"
 	"fmt"
