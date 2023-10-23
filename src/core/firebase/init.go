@@ -13,7 +13,7 @@ func InitFirebaseAdmin() firebase.App {
 	path := path.Join("firebase.json")
 	opt := option.WithCredentialsFile(path)
 	config := &firebase.Config{
-		StorageBucket: "gs://fmanager-795a5.appspot.com",
+		StorageBucket: "fmanager-795a5.appspot.com",
 	}
 	app, err := firebase.NewApp(context.Background(), config, opt)
 	if err != nil {
