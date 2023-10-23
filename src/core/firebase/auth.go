@@ -3,25 +3,10 @@ package firebase
 import (
 	"FM/src/core/exception"
 	"context"
-	"path"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/auth"
-	"google.golang.org/api/option"
 )
-
-func InitFirebaseAdmin() firebase.App {
-	path := path.Join("firebase.json")
-	opt := option.WithCredentialsFile(path)
-	// conf := &firebase.Config{
-	// 	ServiceAccountID: "firebase-adminsdk-n15fz@fmanager-795a5.iam.gserviceaccount.com",
-	// }
-	app, err := firebase.NewApp(context.Background(), nil, opt)
-	if err != nil {
-		exception.PanicLogging(err.Error())
-	}
-	return *app
-}
 
 type FirebaseAuth struct {
 	auth.Client
@@ -62,3 +47,4 @@ func (auth FirebaseAuth) VerifyIDToken(ctx context.Context, idToken string) (Use
 		Picture: picture,
 	}, nil
 }
+

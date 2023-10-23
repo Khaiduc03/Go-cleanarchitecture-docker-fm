@@ -3,7 +3,8 @@ package AuthImpl
 import (
 	Auth "FM/src/auth"
 	models "FM/src/auth/models"
-	firebase "FM/src/core/service"
+	"FM/src/core/firebase"
+
 	"FM/src/entities"
 	"context"
 	"fmt"
@@ -29,7 +30,6 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 	})
 	fmt.Print(err)
 
-
 	if err.Error() != "key is of invalid type" {
 		return entities.User{}, err
 	}
@@ -42,7 +42,6 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 		Picture:  claims["picture"].(string),
 		Position: position,
 	}
-
 
 	return authService.AuthRepository.SignInWithGoogle(ctx, payload)
 }

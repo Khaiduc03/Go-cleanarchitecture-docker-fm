@@ -117,12 +117,16 @@ func (handler CategoryHandler) Delete(c *fiber.Ctx) error {
 }
 
 func (handler CategoryHandler) FindAllByType(c *fiber.Ctx) error {
-	idStr := c.Query("type")
-	return c.Status(fiber.StatusBadRequest).JSON(http.HttpResponse{
-		StatusCode: fiber.StatusBadRequest,
-		Message:    "Invalid type parameter: " + idStr,
+	category_type := c.Query("type")
+
+	categories, err := handler.CategoryService.FindAllCategoryByType(c.Context(), category_type)
+	if err != nil {
+		return exception.HandleError(c, err)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
+		StatusCode: fiber.StatusOK,
+		Message:    "Get all category by type successfully",
+		Data:       categories,
 	})
-
-	// If id is a valid integer, you can use it here
-
 }
