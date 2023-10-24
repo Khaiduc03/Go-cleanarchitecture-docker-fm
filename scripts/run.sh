@@ -3,6 +3,7 @@
 TYPE=$1
 change_mode() {
     sed -i "s/MODE=.*/MODE=$TYPE/" .env
+    sed -i "s/TYPE=.*/TYPE=dev/" .env
 }
 
 check_image_exist() {
