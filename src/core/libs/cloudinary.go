@@ -1,24 +1,24 @@
 package libs
 
 import (
-	"FM/src/configuration"
-	"FM/src/core/exception"
+	"bytes"
 	"context"
 
 	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
+	"github.com/google/uuid"
 )
 
-func NewCloudinary(config configuration.Config) (*cloudinary.Cloudinary, context.Context) {
+func UploadCloudinary(ctx context.Context, file []byte, filename string) string {
+	uuid := uuid.New().String()
+	cloudName := "dzycibpuc"
+	apiKey := "648127967397929"
+	apiSecret := "Wgwk-Gb5c8nFLVsMijmPnPiQnNY"
 
-	CLOUD_NAME := config.Get("CLOUD_NAME")
-	API_KEY := config.Get("API_KEY")
-	API_SECRET := config.Get("API_SECRET")
+	cld, _ := cloudinary.NewFromParams(cloudName, apiKey, apiSecret)
 
-	cld, err := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
-	exception.PanicLogging(err)
+	uploadResult, _ := cld.Upload.Upload(ctx, bytes.NewReader(file), uploader.UploadParams{PublicID: uuid, Folder: "images"})
 
-	cld.Config.URL.Secure = true
-	var ctx = context.Background()
+	return uploadResult.URL
 
-	return cld, ctx
 }
