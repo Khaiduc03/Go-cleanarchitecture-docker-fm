@@ -3,7 +3,6 @@ package configuration
 import (
 	"FM/src/core/exception"
 	"FM/src/entities"
-	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -22,8 +21,8 @@ func NewDataBase(config Config) *gorm.DB {
 	host := config.Get("POSTGRES_HOST")
 	port := config.Get("POSTGRES_PORT")
 	dbName := config.Get("POSTGRES_DB")
-	TYPE := config.Get("MODE")
-	fmt.Print(TYPE)
+	TYPE := config.Get("TYPE")
+	url := config.Get("POSTGRES_URL")
 	maxPoolOpen, err := strconv.Atoi(config.Get("DATA_SOURCE_POOL_MAX_CONN"))
 	exception.PanicLogging(err)
 
@@ -45,9 +44,13 @@ func NewDataBase(config Config) *gorm.DB {
 	)
 
 	debug := "host=" + host + " user=" + username + " password=" + password + " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
-
 	//debug := "host=postgres" + " user=postgres " + " password=postgres" + " dbname=fm" + " port=5432" + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
-	var dsn string = debug
+	var dsn string 
+	if TYPE == "prod" {
+		dsn = url
+	} else {
+		dsn = debug
+	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: loggerDb,
