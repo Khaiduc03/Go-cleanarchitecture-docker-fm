@@ -11,6 +11,8 @@ import (
 	roomImpl "FM/src/modules/Room/implements"
 	"FM/src/modules/category"
 	categoryImpl "FM/src/modules/category/implements"
+	"FM/src/modules/feedback"
+	feedbackImpl "FM/src/modules/feedback/implements"
 	"FM/src/modules/user"
 	userImpl "FM/src/modules/user/implements"
 	"strings"
@@ -54,6 +56,11 @@ func main() {
 	roomService := roomImpl.NewRoomServiceImpl(&roomRepository)
 	roomHandler := room.NewRoomHandler(&roomService, config)
 
+	//feedback
+	feedbackRepository := feedbackImpl.NewFeedbackRepositoryImpl(database)
+	feedbackService := feedbackImpl.NewFeedbackServiceImpl(&feedbackRepository)
+	feedbackHandler := feedback.NewFeedbackHandler(&feedbackService, config)
+
 	app := fiber.New(configuration.NewFiberConfiguration())
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{
@@ -82,6 +89,7 @@ func main() {
 	categoryHandler.Route(app)
 	userHandler.Route(app)
 	roomHandler.Route(app)
+	feedbackHandler.Route(app)
 	err := app.Listen(config.Get("SERVER_PORT"))
 
 	exception.PanicLogging(err)

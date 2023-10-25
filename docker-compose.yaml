@@ -3,6 +3,7 @@ services:
   fiber:
     container_name: fm-fiber
     image: mujag/fm-fiber:${MODE}
+    restart: unless-stopped
     ports:
       - ${SERVER_PORT}:7000
     volumes:

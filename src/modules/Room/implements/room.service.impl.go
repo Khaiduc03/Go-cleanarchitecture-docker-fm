@@ -16,21 +16,11 @@ func NewRoomServiceImpl(roomRepository *room.RoomRepository) room.RoomService {
 }
 
 func (roomService *RoomServiceImpl) FindAll(ctx context.Context) ([]entities.Room, error) {
-
-	response, err := roomService.RoomRepository.FindAll(ctx)
-	if err != nil {
-		return []entities.Room{}, err
-	}
-	return response, nil
+	return roomService.RoomRepository.FindAll(ctx)
 }
 
 func (roomService *RoomServiceImpl) FindById(ctx context.Context, id int) (entities.Room, error) {
-
-	response, err := roomService.RoomRepository.FindById(ctx, id)
-	if err != nil {
-		return entities.Room{}, err
-	}
-	return response, err
+	return roomService.RoomRepository.FindById(ctx, id)
 }
 
 func (roomService *RoomServiceImpl) Create(ctx context.Context, req modelRoom.CreateRoomReq) (string, error) {

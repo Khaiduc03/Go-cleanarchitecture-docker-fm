@@ -5,7 +5,7 @@ import (
 	room "FM/src/modules/Room"
 	modelRoom "FM/src/modules/Room/model"
 	"context"
-	"fmt"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -27,18 +27,19 @@ func (roomRepository *RoomRepositoryImpl) FindAll(ctx context.Context) ([]entiti
 
 func (roomRepository *RoomRepositoryImpl) FindById(ctx context.Context, id int) (entities.Room, error) {
 	var room entities.Room
-	err := roomRepository.DB.Where("id = ?", id).Find(&room).Error
-
-	return room, err
+	isExist := roomRepository.DB.Where("id = ?", id).Find(&room)
+	if isExist.RowsAffected == 0 {
+		return entities.Room{}, errors.New("room not found")
+	}
+	return room, nil
 }
 
 func (roomRepository *RoomRepositoryImpl) Create(ctx context.Context, req modelRoom.CreateRoomReq) (bool, error) {
 	var room entities.Room
 	isExist := roomRepository.DB.Where("room_name = ? ", req.Room_Name).Find(&room)
 	if isExist.RowsAffected != 0 {
-		return false, nil
+		return false, errors.New("room name is exist")
 	}
-	fmt.Println(req)
 	room = entities.Room{RoomName: req.Room_Name, Floor: req.Floor, Building: req.Building, Status: 1}
 	err := roomRepository.DB.Create(&room).Error
 	if err != nil {
@@ -48,9 +49,9 @@ func (roomRepository *RoomRepositoryImpl) Create(ctx context.Context, req modelR
 }
 func (roomRepository *RoomRepositoryImpl) Update(ctx context.Context, req modelRoom.UpdateRoomReq) (bool, error) {
 	var room entities.Room
-	result := roomRepository.DB.Where("id = ?", req.ID).First(&room)
-	if result.RowsAffected == 0 {
-		return false, nil
+	isExist := roomRepository.DB.Where("id = ?", req.ID).First(&room)
+	if isExist.RowsAffected == 0 {
+		return false, errors.New("room not found")
 	}
 	room.RoomName = req.Room_Name
 	room.Floor = req.Floor
@@ -67,19 +68,15 @@ func (roomRepository *RoomRepositoryImpl) Update(ctx context.Context, req modelR
 
 func (roomRepository *RoomRepositoryImpl) Delete(ctx context.Context, id int) (bool, error) {
 	var room entities.Room
-	result := roomRepository.DB.Where("id = ?", id).First(&room)
-	if result.Error != nil {
-		return false, result.Error
+	isExist := roomRepository.DB.Where("id = ?", id).First(&room)
+	if isExist.RowsAffected == 0 {
+		return false, errors.New("room not found")
 	}
-	
-	if result.RowsAffected == 0 {
-		return false, nil
-	}
-	
+
 	err := roomRepository.DB.Delete(&room).Error
 	if err != nil {
 		return false, err
 	}
-	
+
 	return true, nil
 }
