@@ -7,6 +7,8 @@ import (
 	"FM/src/core/exception"
 	"FM/src/core/firebase"
 
+	room "FM/src/modules/Room"
+	roomImpl "FM/src/modules/Room/implements"
 	"FM/src/modules/category"
 	categoryImpl "FM/src/modules/category/implements"
 	"FM/src/modules/user"
@@ -32,17 +34,25 @@ func main() {
 	firebaseApp := firebase.InitFirebaseAdmin()
 	firebaseAuth := firebase.NewFirebaseAuth(&firebaseApp)
 
+	//auth
 	authRepository := AuthImpl.NewAuthRepositoryImpl(database)
 	authService := AuthImpl.NewAuthServiceImpl(&authRepository, &firebaseAuth)
 	authHandler := Auth.NewAuthHandler(&authService, config)
 
+	//category
 	categoryRepository := categoryImpl.NewCategoryRepositoryImpl(database)
 	categoryService := categoryImpl.NewCategoryServiceImpl(&categoryRepository)
 	categoryHandler := category.NewCategoryHandler(&categoryService, config)
 
+	//user
 	userRepository := userImpl.NewUserRepositoryImpl(database)
 	userService := userImpl.NewUserServiceImpl(&userRepository)
 	userHandler := user.NewCategoryHandler(&userService, config)
+
+	//room
+	roomRepository := roomImpl.NewRoomRepositoryImpl(database)
+	roomService := roomImpl.NewRoomServiceImpl(&roomRepository)
+	roomHandler := room.NewRoomHandler(&roomService, config)
 
 	app := fiber.New(configuration.NewFiberConfiguration())
 	app.Use(recover.New())
@@ -71,6 +81,7 @@ func main() {
 	authHandler.Route(app)
 	categoryHandler.Route(app)
 	userHandler.Route(app)
+	roomHandler.Route(app)
 	err := app.Listen(config.Get("SERVER_PORT"))
 
 	exception.PanicLogging(err)
