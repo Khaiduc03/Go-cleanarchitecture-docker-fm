@@ -37,3 +37,12 @@ func NewUserRepositoryImpl(db *gorm.DB) user.UserRepository {
 	return &UserRepositoryImpl{db}
 }
 
+func (userRepository *UserRepositoryImpl) GetAllStaff(ctx context.Context) ([]entities.User, error) {
+	var users []entities.User
+	err := userRepository.DB.WithContext(ctx).Where("role = 'STAFF'").Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+

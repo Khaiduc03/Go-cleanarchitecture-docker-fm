@@ -30,6 +30,7 @@ func (handler UserHandler) Route(app *fiber.App) {
 
 	route := app.Group(basePath, middleware.AuthMiddleware(handler.Config), middleware.RoleMiddleware([]string{"TEACHER"}))
 	route.Get("/", handler.GetProfile)
+	route.Get("/contact", handler.GetAllStaff)
 	route.Put("/", handler.UpdateProfile)
 	route.Post("/", handler.Upload)
 }
@@ -44,6 +45,19 @@ func (handler UserHandler) GetProfile(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    "Get profile successfully",
+		Data:       response,
+	})
+}
+
+func (handler UserHandler) GetAllStaff(c *fiber.Ctx) error {
+
+	response, err := handler.UserService.GetAllStaff(c.Context())
+	if err != nil {
+		return exception.HandleError(c, err)
+	}
+	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
+		StatusCode: fiber.StatusOK,
+		Message:    "Get all contact successfully",
 		Data:       response,
 	})
 }

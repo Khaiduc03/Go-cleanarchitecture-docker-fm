@@ -22,3 +22,7 @@ func (userService *UserServiceImpl) GetProfile(ctx context.Context, id uint) (en
 func (userService *UserServiceImpl) UpdateProfile(ctx context.Context, id uint, req modelUser.UpdateUserReq) (string, error) {
 	return userService.UserRepository.UpdateProfile(ctx, id, req)
 }
+
+func (userService *UserServiceImpl) GetAllStaff(ctx context.Context) ([]entities.User, error) {
+	return userService.UserRepository.GetAllStaff(ctx)
+}

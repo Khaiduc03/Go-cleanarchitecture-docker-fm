@@ -24,6 +24,10 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 	idToken := req.IDToken
 	position := req.Position
 
+	if position == "HCM" || position == "HN" {
+		position = "FPT Polytechnic Hồ Chí Minh"
+	}
+
 	tokenString, err := jwt.Parse(idToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte("18723735524-8qe3014rf4goh1ck0o6lp07tn7c0965q.apps.googleusercontent.com"), nil
 	})
