@@ -31,7 +31,7 @@ func (feedbackService *FeedbackServiceImpl) Create(ctx context.Context, req mode
 	return "Create feedback success", nil
 }
 
-func (feedbackService *FeedbackServiceImpl) History(ctx context.Context, user_id int) ([]modelFeedback.GetAllFeedbackRes, error) {
+func (feedbackService *FeedbackServiceImpl) History(ctx context.Context, user_id int) ([]modelFeedback.GetAllHistoryFeedbackRes, error) {
 	return feedbackService.FeedbackRepository.History(ctx, user_id)
 }
 

@@ -64,13 +64,30 @@ func (feedbackRepository *FeedbackRepositoryImpl) FindById(ctx context.Context, 
 
 		urls = append(urls, image.Url)
 	}
+
+	var user entities.User
+	err = feedbackRepository.DB.Where("id = ?", feedback.UserID).Find(&user).Error
+	if err != nil {
+		return modelFeedback.GetFeedbackRes{}, err
+	}
+
+	var room entities.Room
+	err = feedbackRepository.DB.Where("id = ?", feedback.RoomID).Find(&room).Error
+	if err != nil {
+		return modelFeedback.GetFeedbackRes{}, err
+	}
+	var category entities.Category
+	err = feedbackRepository.DB.Where("id = ?", feedback.CategoryID).Find(&category).Error
+	if err != nil {
+		return modelFeedback.GetFeedbackRes{}, err
+	}
 	res := modelFeedback.GetFeedbackRes{
 		ID:             feedback.ID,
 		Name_Feed_Back: feedback.NameFeedBack,
-		RoomID:         feedback.RoomID,
+		Room:           room,
 		Description:    feedback.Description,
-		CategoryID:     feedback.CategoryID,
-		UserID:         feedback.UserID,
+		Category:       category,
+		User:           user,
 		Urls:           urls,
 	}
 
@@ -101,21 +118,54 @@ func (feedbackRepository *FeedbackRepositoryImpl) Create(ctx context.Context, re
 	return true, nil
 }
 
-func (feedbackRepository *FeedbackRepositoryImpl) History(ctx context.Context, user_id int) ([]modelFeedback.GetAllFeedbackRes, error) {
+func (feedbackRepository *FeedbackRepositoryImpl) History(ctx context.Context, user_id int) ([]modelFeedback.GetAllHistoryFeedbackRes, error) {
 	var feedbacks []entities.FeedBack
 	err := feedbackRepository.DB.Where("user_id = ?", user_id).Find(&feedbacks).Error
 	if err != nil {
 		return nil, err
 	}
-	var result []modelFeedback.GetAllFeedbackRes
+	var user entities.User
+	err = feedbackRepository.DB.Where("id = ?", user_id).Find(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	//image
+	var images []entities.Image
+	var urls []string
+
+	var result []modelFeedback.GetAllHistoryFeedbackRes
 	for _, feedback := range feedbacks {
-		f := modelFeedback.GetAllFeedbackRes{
+		//room
+		var room entities.Room
+		err = feedbackRepository.DB.Where("id = ?", feedback.RoomID).Find(&room).Error
+		if err != nil {
+			return nil, err
+		}
+		//category
+		var category entities.Category
+		err = feedbackRepository.DB.Where("id = ?", feedback.CategoryID).Find(&category).Error
+		if err != nil {
+			return nil, err
+		}
+
+		err = feedbackRepository.DB.Select("url").Where("feedback_id = ?", feedback.ID).Find(&images).Error
+		if err != nil {
+			return nil, err
+		}
+		for _, image := range images {
+
+			urls = append(urls, image.Url)
+		}
+
+		f := modelFeedback.GetAllHistoryFeedbackRes{
 			ID:             feedback.ID,
 			Name_Feed_Back: feedback.NameFeedBack,
 			Description:    feedback.Description,
-			CategoryID:     feedback.CategoryID,
-			RoomID:         feedback.RoomID,
-			UserID:         feedback.UserID,
+			Category:       category,
+			Room:           room,
+			User:           user,
+			Urls:           urls,
 		}
 
 		result = append(result, f)
