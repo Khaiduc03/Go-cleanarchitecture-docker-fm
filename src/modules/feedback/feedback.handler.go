@@ -32,6 +32,7 @@ func (handler FeedbackHandler) Route(app *fiber.App) {
 
 	route := app.Group(basePath, middleware.AuthMiddleware(handler.Config), middleware.RoleMiddleware([]string{"TEACHER"}))
 	route.Get("/", handler.FindAll)
+	route.Get("/history", handler.History)
 	route.Get("/:id", handler.FindById)
 	route.Post("/", handler.Create)
 	// route.Put("/", handler.Update)
@@ -70,6 +71,22 @@ func (handler FeedbackHandler) FindById(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    "Get feedback by id successfully",
+		Data:       feedback,
+	})
+}
+
+func (handler FeedbackHandler) History(c *fiber.Ctx) error {
+	userData := c.Locals("user")
+	user := userData.(jwt.MapClaims)
+
+	feedback, err := handler.FeedbackService.History(c.Context(), int(user["id"].(float64)))
+	if err != nil {
+		return exception.HandleError(c, err)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
+		StatusCode: fiber.StatusOK,
+		Message:    "Get history feedback of user successfully",
 		Data:       feedback,
 	})
 }

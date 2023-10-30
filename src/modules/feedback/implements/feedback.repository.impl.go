@@ -20,23 +20,61 @@ func NewFeedbackRepositoryImpl(DB *gorm.DB) feedback.FeedbackRepository {
 }
 
 // FindAll implements feedback.FeedbackRepository.
-func (feedbackRepository *FeedbackRepositoryImpl) FindAll(ctx context.Context) ([]entities.FeedBack, error) {
+func (feedbackRepository *FeedbackRepositoryImpl) FindAll(ctx context.Context) ([]modelFeedback.GetAllFeedbackRes, error) {
 
 	var feedbacks []entities.FeedBack
 	err := feedbackRepository.DB.Find(&feedbacks).Error
+	if err != nil {
+		return nil, err
+	}
 
-	return feedbacks, err
+	var result []modelFeedback.GetAllFeedbackRes
+	for _, feedback := range feedbacks {
+		f := modelFeedback.GetAllFeedbackRes{
+			ID:             feedback.ID,
+			Name_Feed_Back: feedback.NameFeedBack,
+			Description:    feedback.Description,
+			CategoryID:     feedback.CategoryID,
+			RoomID:         feedback.RoomID,
+			UserID:         feedback.UserID,
+		}
+
+		result = append(result, f)
+	}
+
+	return result, nil
 }
 
 // FindById implements feedback.FeedbackRepository.
-func (feedbackRepository *FeedbackRepositoryImpl) FindById(ctx context.Context, id int) (entities.FeedBack, error) {
+func (feedbackRepository *FeedbackRepositoryImpl) FindById(ctx context.Context, id int) (modelFeedback.GetFeedbackRes, error) {
 
 	var feedback entities.FeedBack
-	isExist := feedbackRepository.DB.Where("id = ?", id).Find(&feedback)
-	if isExist.RowsAffected == 0 {
-		return feedback, errors.New("feedback not found")
+	err := feedbackRepository.DB.Where("id = ?", id).First(&feedback).Error
+	if err != nil {
+		return modelFeedback.GetFeedbackRes{}, err
 	}
-	return feedback, nil
+
+	var images []entities.Image
+	var urls []string
+	err = feedbackRepository.DB.Select("url").Where("feedback_id = ?", id).Find(&images).Error
+	if err != nil {
+		return modelFeedback.GetFeedbackRes{}, err
+	}
+	for _, image := range images {
+
+		urls = append(urls, image.Url)
+	}
+	res := modelFeedback.GetFeedbackRes{
+		ID:             feedback.ID,
+		Name_Feed_Back: feedback.NameFeedBack,
+		RoomID:         feedback.RoomID,
+		Description:    feedback.Description,
+		CategoryID:     feedback.CategoryID,
+		UserID:         feedback.UserID,
+		Urls:           urls,
+	}
+
+	return res, nil
 }
 
 func (feedbackRepository *FeedbackRepositoryImpl) Create(ctx context.Context, req modelFeedback.CreateFeedbackReq) (bool, error) {
@@ -63,29 +101,42 @@ func (feedbackRepository *FeedbackRepositoryImpl) Create(ctx context.Context, re
 	return true, nil
 }
 
-func (feedbackRepository *FeedbackRepositoryImpl) History(ctx context.Context, user_id int) ([]entities.FeedBack, error) {
+func (feedbackRepository *FeedbackRepositoryImpl) History(ctx context.Context, user_id int) ([]modelFeedback.GetAllFeedbackRes, error) {
 	var feedbacks []entities.FeedBack
 	err := feedbackRepository.DB.Where("user_id = ?", user_id).Find(&feedbacks).Error
 	if err != nil {
 		return nil, err
 	}
-	return feedbacks, nil
+	var result []modelFeedback.GetAllFeedbackRes
+	for _, feedback := range feedbacks {
+		f := modelFeedback.GetAllFeedbackRes{
+			ID:             feedback.ID,
+			Name_Feed_Back: feedback.NameFeedBack,
+			Description:    feedback.Description,
+			CategoryID:     feedback.CategoryID,
+			RoomID:         feedback.RoomID,
+			UserID:         feedback.UserID,
+		}
+
+		result = append(result, f)
+	}
+	return result, nil
 }
 
-func (feedbackRepository *FeedbackRepositoryImpl) CheckCategory(ctx context.Context, category_id int) ( error) {
+func (feedbackRepository *FeedbackRepositoryImpl) CheckCategory(ctx context.Context, category_id int) error {
 	var category entities.Category
 	isExistCategory := feedbackRepository.DB.Where("id = ?", category_id).Find(&category)
 	if isExistCategory.RowsAffected == 0 {
-		return  errors.New("category not found")
+		return errors.New("category not found")
 	}
-	return  nil
+	return nil
 }
 
-func (feedbackRepository *FeedbackRepositoryImpl) CheckRoom(ctx context.Context, room_id int) ( error) {
+func (feedbackRepository *FeedbackRepositoryImpl) CheckRoom(ctx context.Context, room_id int) error {
 	var room entities.Room
 	isExistRoom := feedbackRepository.DB.Where("id = ?", room_id).Find(&room)
 	if isExistRoom.RowsAffected == 0 {
-		return  errors.New("room not found")
+		return errors.New("room not found")
 	}
 	return nil
 }
