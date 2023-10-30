@@ -44,10 +44,14 @@ func (handler FeedbackHandler) FindAll(c *fiber.Ctx) error {
 	}
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
-		Message:    "Get all room successfully",
+		Message:    "Get all feed successfully",
 		Data:       feedbacks,
 	})
 }
+
+// func (handler FeedBackService) HistoryFeedback(c *fiber.Ctx) error{
+
+// }
 
 // find by id
 func (handler FeedbackHandler) FindById(c *fiber.Ctx) error {
@@ -81,6 +85,24 @@ func (handler FeedbackHandler) Create(c *fiber.Ctx) error {
 	if err != nil {
 		return exception.HandleError(c, err)
 	}
+
+	categoryID, err := strconv.ParseUint(form.Value["category_id"][0], 10, 32)
+	if err != nil {
+		return exception.HandleError(c, err)
+	}
+	checkCategory := handler.FeedbackService.CheckCategory(c.Context(), int(categoryID))
+	if checkCategory != nil {
+		return exception.HandleErrorCustomMessage(c, "Category not found")
+	}
+	roomID, err := strconv.ParseUint(form.Value["room_id"][0], 10, 32)
+	if err != nil {
+		return exception.HandleError(c, err)
+	}
+	checkRoom := handler.FeedbackService.CheckRoom(c.Context(), int(roomID))
+	if checkRoom != nil {
+		return exception.HandleErrorCustomMessage(c, "Room not found")
+	}
+
 	files := form.File["files"]
 	if len(files) == 0 {
 		return exception.HandleErrorCustomMessage(c, "Missing required fields")
@@ -97,15 +119,6 @@ func (handler FeedbackHandler) Create(c *fiber.Ctx) error {
 		}
 		url := libs.UploadCloudinary(context.Background(), fileByte)
 		urls = append(urls, url)
-	}
-	categoryID, err := strconv.ParseUint(form.Value["category_id"][0], 10, 32)
-	if err != nil {
-		return exception.HandleError(c, err)
-	}
-
-	roomID, err := strconv.ParseUint(form.Value["room_id"][0], 10, 32)
-	if err != nil {
-		return exception.HandleError(c, err)
 	}
 
 	req = modelFeedback.CreateFeedbackReq{

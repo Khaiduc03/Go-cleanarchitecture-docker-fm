@@ -41,7 +41,9 @@ func (feedbackRepository *FeedbackRepositoryImpl) FindById(ctx context.Context, 
 
 func (feedbackRepository *FeedbackRepositoryImpl) Create(ctx context.Context, req modelFeedback.CreateFeedbackReq) (bool, error) {
 	var feedback entities.FeedBack
+
 	var image entities.Image
+
 	feedback = entities.FeedBack{UserID: uint(req.UserID), NameFeedBack: req.Name_Feed_Back, Description: req.Description, CategoryID: uint(req.CategoryID), RoomID: uint(req.RoomID)}
 
 	err := feedbackRepository.DB.Create(&feedback)
@@ -49,7 +51,6 @@ func (feedbackRepository *FeedbackRepositoryImpl) Create(ctx context.Context, re
 	if err.Error != nil {
 		return false, err.Error
 	}
-	fmt.Println("feedback", feedback)
 	for _, url := range req.Urls {
 		image = entities.Image{FeedbackID: feedback.ID, Url: url}
 		errImg := feedbackRepository.DB.Create(&image).Error
@@ -60,4 +61,31 @@ func (feedbackRepository *FeedbackRepositoryImpl) Create(ctx context.Context, re
 	}
 
 	return true, nil
+}
+
+func (feedbackRepository *FeedbackRepositoryImpl) History(ctx context.Context, user_id int) ([]entities.FeedBack, error) {
+	var feedbacks []entities.FeedBack
+	err := feedbackRepository.DB.Where("user_id = ?", user_id).Find(&feedbacks).Error
+	if err != nil {
+		return nil, err
+	}
+	return feedbacks, nil
+}
+
+func (feedbackRepository *FeedbackRepositoryImpl) CheckCategory(ctx context.Context, category_id int) ( error) {
+	var category entities.Category
+	isExistCategory := feedbackRepository.DB.Where("id = ?", category_id).Find(&category)
+	if isExistCategory.RowsAffected == 0 {
+		return  errors.New("category not found")
+	}
+	return  nil
+}
+
+func (feedbackRepository *FeedbackRepositoryImpl) CheckRoom(ctx context.Context, room_id int) ( error) {
+	var room entities.Room
+	isExistRoom := feedbackRepository.DB.Where("id = ?", room_id).Find(&room)
+	if isExistRoom.RowsAffected == 0 {
+		return  errors.New("room not found")
+	}
+	return nil
 }

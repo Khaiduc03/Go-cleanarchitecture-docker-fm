@@ -3,6 +3,7 @@ package configuration
 import (
 	"FM/src/core/exception"
 	"FM/src/entities"
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -42,7 +43,7 @@ func NewDataBase(config Config) *gorm.DB {
 			Colorful:                  true,
 		},
 	)
-
+	fmt.Println("TYPE: ", TYPE)
 	debug := "host=" + host + " user=" + username + " password=" + password + " dbname=" + dbName + " port=" + port + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
 	//debug := "host=postgres" + " user=postgres " + " password=postgres" + " dbname=fm" + " port=5432" + " sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
 	var dsn string 
