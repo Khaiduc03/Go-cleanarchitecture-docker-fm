@@ -25,6 +25,13 @@ func (roomRepository *RoomRepositoryImpl) FindAll(ctx context.Context) ([]entiti
 	return rooms, err
 }
 
+func (roomRepository *RoomRepositoryImpl) FindByName(ctx context.Context, room_name string) ([]entities.Room, error) {
+	var rooms []entities.Room
+	err := roomRepository.DB.Where("room_name = ?", room_name).Find(&rooms).Error
+	return rooms, err
+}
+
+
 func (roomRepository *RoomRepositoryImpl) FindById(ctx context.Context, id int) (entities.Room, error) {
 	var room entities.Room
 	isExist := roomRepository.DB.Where("id = ?", id).Find(&room)
@@ -80,3 +87,4 @@ func (roomRepository *RoomRepositoryImpl) Delete(ctx context.Context, id int) (b
 
 	return true, nil
 }
+

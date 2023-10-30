@@ -8,6 +8,7 @@ import (
 
 type RoomRepository interface {
 	FindAll(ctx context.Context) ([]entities.Room, error)
+	FindByName(ctx context.Context, room_name string) ([]entities.Room, error)
 	FindById(ctx context.Context, id int) (entities.Room, error)
 	Create(ctx context.Context, req modelRoom.CreateRoomReq) (bool, error)
 	Update(ctx context.Context, req modelRoom.UpdateRoomReq) (bool, error)

@@ -15,11 +15,9 @@ import (
 	feedbackImpl "FM/src/modules/feedback/implements"
 	"FM/src/modules/user"
 	userImpl "FM/src/modules/user/implements"
-	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -80,11 +78,21 @@ func main() {
 		Expiration:        30 * time.Second,
 		LimiterMiddleware: limiter.SlidingWindow{},
 	}))
-	app.Use(cache.New(cache.Config{
-		Next: func(c *fiber.Ctx) bool {
-			return strings.Contains(c.Route().Path, "/ws")
-		},
-	}))
+
+	// app.Use(cache.New(cache.Config{
+	// 	Next:         nil,
+	// 	Expiration:  1,
+	// 	CacheHeader:  "X-Cache",
+	// 	CacheControl: false,
+	// 	KeyGenerator: func(c *fiber.Ctx) string {
+	// 		return utils.CopyString(c.Path())
+	// 	},
+	// 	ExpirationGenerator:  nil,
+	// 	StoreResponseHeaders: false,
+	// 	Storage:              nil,
+	// 	MaxBytes:             0,
+	// 	Methods:              []string{fiber.MethodGet, fiber.MethodHead},
+	// }))
 	authHandler.Route(app)
 	categoryHandler.Route(app)
 	userHandler.Route(app)

@@ -34,17 +34,20 @@ func (handler RoomHandler) Route(app *fiber.App) {
 }
 
 func (handler RoomHandler) FindAll(c *fiber.Ctx) error {
-	rooms, err := handler.RoomService.FindAll(c.Context())
+
+	room_name := c.Query("room_name")
+	rooms, err := handler.RoomService.FindAll(c.Context(), room_name)
+
 	if err != nil {
 		return exception.HandleError(c, err)
 	}
-
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    "Get all room successfully",
 		Data:       rooms,
 	})
 }
+
 
 func (handler RoomHandler) FindById(c *fiber.Ctx) error {
 	idStr := c.Params("id")
@@ -69,12 +72,11 @@ func (handler RoomHandler) FindById(c *fiber.Ctx) error {
 }
 
 func (handler RoomHandler) Create(c *fiber.Ctx) error {
-	 validator := shared.NewValidator()
+	validator := shared.NewValidator()
 	var req modelRoom.CreateRoomReq
 	if err := c.BodyParser(&req); err != nil {
 		return exception.HandleError(c, err)
 	}
-
 
 	if err := validator.Validate(req); err != nil {
 		return exception.HandleErrorCustomMessage(c, "Missing required fields")
@@ -114,7 +116,7 @@ func (handler RoomHandler) Update(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    message,
-		Data: "ok",
+		Data:       "ok",
 	})
 }
 

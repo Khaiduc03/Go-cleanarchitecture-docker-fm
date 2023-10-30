@@ -15,7 +15,10 @@ func NewRoomServiceImpl(roomRepository *room.RoomRepository) room.RoomService {
 	return &RoomServiceImpl{RoomRepository: *roomRepository}
 }
 
-func (roomService *RoomServiceImpl) FindAll(ctx context.Context) ([]entities.Room, error) {
+func (roomService *RoomServiceImpl) FindAll(ctx context.Context, room_name string) ([]entities.Room, error) {
+	if room_name != "" {
+		return roomService.RoomRepository.FindByName(ctx, room_name)
+	}
 	return roomService.RoomRepository.FindAll(ctx)
 }
 
