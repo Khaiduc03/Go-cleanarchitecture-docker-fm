@@ -27,7 +27,7 @@ func (roomRepository *RoomRepositoryImpl) FindAll(ctx context.Context) ([]entiti
 
 func (roomRepository *RoomRepositoryImpl) FindByName(ctx context.Context, room_name string) ([]entities.Room, error) {
 	var rooms []entities.Room
-	err := roomRepository.DB.Where("room_name = ?", room_name).Find(&rooms).Error
+	err := roomRepository.DB.Where("room_name LIKE ?", "%"+room_name+"%").Find(&rooms).Error
 	return rooms, err
 }
 
