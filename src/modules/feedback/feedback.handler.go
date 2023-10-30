@@ -9,6 +9,7 @@ import (
 	"FM/src/core/utils"
 	modelFeedback "FM/src/modules/feedback/model"
 	"context"
+	"fmt"
 	"io"
 	"strconv"
 
@@ -107,6 +108,7 @@ func (handler FeedbackHandler) Create(c *fiber.Ctx) error {
 	if len(files) == 0 {
 		return exception.HandleErrorCustomMessage(c, "Missing required fields")
 	}
+	fmt.Println("files", files)
 	//upload to cloud and get url
 	for _, file := range files {
 		res, err := file.Open()
