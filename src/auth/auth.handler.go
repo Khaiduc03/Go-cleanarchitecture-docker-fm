@@ -22,35 +22,17 @@ func (handler AuthHandler) Route(app *fiber.App) {
 	var basePath = utils.GetBaseRoute(handler.Config, "/auth")
 	route := app.Group(basePath)
 
-	route.Post("/login", handler.SignInWithGoogle)
+	route.Get("/login", handler.SignInWithGoogle)
 }
 
 func (handler AuthHandler) SignInWithGoogle(c *fiber.Ctx) error {
 
-	if c.Method() != "POST" {
-		return c.Status(fiber.StatusMethodNotAllowed).JSON(http.HttpResponse{
-			StatusCode: fiber.StatusMethodNotAllowed,
-			Message:    "Method Not Allowed",
-		})
-	}
-
-	var requestData struct {
-		IDToken string `json:"idToken"`
-	}
-
-	if err := c.BodyParser(&requestData); err != nil {
-		exception.HandleError(c, err)
-	}
-
-	idToken := requestData.IDToken
+	idToken := c.Query("idToken")
 
 	result, err := handler.AuthService.SignInWithGoogle(c.Context(), idToken)
+
 	if err != nil {
-		return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
-			StatusCode: fiber.ErrBadRequest.Code,
-			Message:    "Sign in with google failed",
-			Data:       err,
-		})
+		exception.HandleError(c, err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{

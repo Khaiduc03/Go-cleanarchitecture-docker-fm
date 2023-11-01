@@ -3,6 +3,7 @@ package firebase
 import (
 	"FM/src/core/exception"
 	"context"
+	"fmt"
 	"path"
 
 	firebase "firebase.google.com/go/v4"
@@ -11,9 +12,10 @@ import (
 )
 
 func InitFirebaseAdmin() firebase.App {
-	path := path.Join("firebase.json")
+	path := path.Join("firebase_sdk.json")
 	opt := option.WithCredentialsFile(path)
 	app, err := firebase.NewApp(context.Background(), nil, opt)
+
 	if err != nil {
 		exception.PanicLogging(err.Error())
 	}
@@ -42,6 +44,7 @@ type UserPayload struct {
 func (auth FirebaseAuth) VerifyIDToken(ctx context.Context, idToken string) (UserPayload, error) {
 	token, err := auth.Client.VerifyIDToken(ctx, idToken)
 	if err != nil {
+		fmt.Print("Err", err)
 		return UserPayload{}, err
 	}
 

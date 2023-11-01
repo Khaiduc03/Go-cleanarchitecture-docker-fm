@@ -20,17 +20,16 @@ import (
 func main() {
 	config := configuration.NewConfig()
 	database := configuration.NewDataBase(config)
-	// cloud, _err := libs.NewCloudinary(config)
-	// if _err != nil {
-	// 	panic(_err)
-	// }
+
 	firebaseApp := firebase.InitFirebaseAdmin()
 	firebaseAuth := firebase.NewFirebaseAuth(&firebaseApp)
 
 	authRepository := AuthImpl.NewAuthRepositoryImpl(database)
 	authService := AuthImpl.NewAuthServiceImpl(&authRepository, &firebaseAuth)
-	authHandler := Auth.NewAuthHandler(&authService, config, )
+	authHandler := Auth.NewAuthHandler(&authService, config)
+
 	app := fiber.New(configuration.NewFiberConfiguration())
+
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:3000",
@@ -54,9 +53,9 @@ func main() {
 			return strings.Contains(c.Route().Path, "/ws")
 		},
 	}))
+
 	authHandler.Route(app)
 
 	err := app.Listen(config.Get("SERVER_PORT"))
-
 	exception.PanicLogging(err)
 }

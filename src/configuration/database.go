@@ -2,7 +2,6 @@ package configuration
 
 import (
 	"FM/src/core/exception"
-	"FM/src/entities"
 	"log"
 	"math/rand"
 	"os"
@@ -66,13 +65,13 @@ func NewDataBase(config Config) *gorm.DB {
 	sqlDB.SetConnMaxLifetime(time.Duration(rand.Int31n(int32(maxPollLifeTime))) * time.Millisecond)
 
 	// auto migrate
-	db.AutoMigrate(&entities.User{})
-	db.AutoMigrate(&entities.Category{})
-	db.AutoMigrate(&entities.User{})
-	db.AutoMigrate(&entities.Image{})
-	db.AutoMigrate(&entities.Rating{})
-	db.AutoMigrate(&entities.Schedule{})
-	db.AutoMigrate(&entities.FeedBack{})
-	db.AutoMigrate(&entities.Room{})
+	// db.AutoMigrate(&entities.User{})
+	// db.AutoMigrate(&entities.Category{})
+	// db.AutoMigrate(&entities.User{})
+	// db.AutoMigrate(&entities.Image{})
+	// db.AutoMigrate(&entities.Rating{})
+	// db.AutoMigrate(&entities.Schedule{})
+	// db.AutoMigrate(&entities.FeedBack{})
+	// db.AutoMigrate(&entities.Room{})
 	return db
 }
