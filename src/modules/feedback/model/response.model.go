@@ -1,15 +1,18 @@
 package modelFeedback
 
-import "FM/src/entities"
+import (
+	"FM/src/entities"
+	"time"
+)
 
 type GetFeedbackRes struct {
-	ID             uint     `json:"id"`
-	Name_Feed_Back string   `json:"name_feed_back" validate:"required"`
+	ID             uint              `json:"id"`
+	Name_Feed_Back string            `json:"name_feed_back" validate:"required"`
 	Room           entities.Room     `json:"room"`
-	Description    string   `json:"description" validate:"required"`
+	Description    string            `json:"description" validate:"required"`
 	Category       entities.Category `json:"category"`
 	User           entities.User     `json:"user"`
-	Urls           []string `json:"url" validate:"required"`
+	Urls           []string          `json:"url" validate:"required"`
 }
 
 type GetAllFeedbackRes struct {
@@ -28,5 +31,9 @@ type GetAllHistoryFeedbackRes struct {
 	Description    string            `json:"description" validate:"required"`
 	Category       entities.Category `json:"category"`
 	User           entities.User     `json:"user"`
-	Urls		   []string          `json:"url" validate:"required"`
+	Urls           []string          `json:"url" validate:"required"`
+	CreatedAt      time.Time         `json:"created_at"`
+	TimeStarted    time.Time         `json:"time_started"`
+	TimeFinish     time.Time         `json:"time_finish"`
+	Status         string            `json:"status"`
 }

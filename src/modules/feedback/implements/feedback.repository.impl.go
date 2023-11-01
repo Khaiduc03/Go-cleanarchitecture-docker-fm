@@ -166,6 +166,10 @@ func (feedbackRepository *FeedbackRepositoryImpl) History(ctx context.Context, u
 			Room:           room,
 			User:           user,
 			Urls:           urls,
+			CreatedAt:      feedback.CreatedAt,
+			TimeStarted:    feedback.TimeStarted,
+			TimeFinish:     feedback.TimeFinish,
+			Status:         feedback.Status,
 		}
 
 		result = append(result, f)

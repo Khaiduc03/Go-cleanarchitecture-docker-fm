@@ -9,6 +9,7 @@ down:
 prod:
 	./scripts/run.sh prod
 
+
 dev:
 	./scripts/run.sh dev
 
@@ -20,6 +21,7 @@ push:
 	git commit -m "$(m)"
 	git push
 	./scripts/push.sh
+
 #to run this command you need run script make chmod
 build:
 	./scripts/push.sh
