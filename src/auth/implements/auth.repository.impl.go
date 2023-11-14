@@ -2,7 +2,7 @@ package AuthImpl
 
 import (
 	"context"
-	"fmt"
+	"strings"
 
 	Auth "FM/src/auth"
 	"FM/src/auth/models"
@@ -24,7 +24,6 @@ func NewAuthRepositoryImpl(DB *gorm.DB) Auth.AuthRepository {
 
 func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, req models.Payload) (entities.User, error) {
 	var user entities.User
-	fmt.Print(req)
 
 	email := req.Email
 	isExist := authRepository.DB.WithContext(ctx).Where("email = ?", email).Find(&user)
@@ -34,12 +33,18 @@ func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, 
 	}
 
 	if isExist.RowsAffected == 0 {
+		var roles string
+		if !strings.HasSuffix(email, "@fpt.edu.vn") {
+			roles = entities.TEACHER
+
+		}
+		roles = entities.STAFF
 		newUser := entities.User{
 			Email:    email,
 			Url:      req.Picture,
 			Name:     req.Name,
 			Position: req.Position,
-			Role:     entities.TEACHER,
+			Role:     roles,
 		}
 
 		result := authRepository.DB.WithContext(ctx).Create(&newUser)

@@ -24,15 +24,15 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 	idToken := req.IDToken
 	position := req.Position
 
-
 	tokenString, err := jwt.Parse(idToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte("18723735524-8qe3014rf4goh1ck0o6lp07tn7c0965q.apps.googleusercontent.com"), nil
 	})
-	fmt.Print(err)
+	fmt.Print(tokenString)
 
-	if err.Error() != "key is of invalid type" {
-		return entities.User{}, err
-	}
+	// if err.Error() != "key is of invalid type" {
+	// 	return entities.User{}, err
+	// }
+	fmt.Print(err)
 
 	claims := tokenString.Claims.(jwt.MapClaims)
 
@@ -42,6 +42,7 @@ func (authService *AuthServiceImpl) SignInWithGoogle(ctx context.Context, req mo
 		Picture:  claims["picture"].(string),
 		Position: position,
 	}
+	fmt.Print(payload)
 
 	return authService.AuthRepository.SignInWithGoogle(ctx, payload)
 }
