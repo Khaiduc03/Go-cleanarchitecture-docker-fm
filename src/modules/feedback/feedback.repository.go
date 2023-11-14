@@ -12,6 +12,8 @@ type FeedbackRepository interface {
 	Create(ctx context.Context, model modelFeedback.CreateFeedbackReq) (bool, error)
 	CheckCategory(ctx context.Context, category_id int) error
 	CheckRoom(ctx context.Context, room_id int) error
+	//staff
+			
 	// Update(ctx context.Context, model modelFeedback.CreateFeedbackReq) (string, error)
 	// Delete(ctx context.Context, id int) (string, error)
 }

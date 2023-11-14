@@ -33,12 +33,12 @@ func (authRepository *AuthRepositoryImpl) SignInWithGoogle(ctx context.Context, 
 	}
 
 	if isExist.RowsAffected == 0 {
-		var roles string
+		var roles string = entities.STAFF
 		if !strings.HasSuffix(email, "@fpt.edu.vn") {
 			roles = entities.TEACHER
 
 		}
-		roles = entities.STAFF
+
 		newUser := entities.User{
 			Email:    email,
 			Url:      req.Picture,

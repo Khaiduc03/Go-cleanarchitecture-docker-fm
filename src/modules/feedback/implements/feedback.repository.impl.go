@@ -22,24 +22,37 @@ func NewFeedbackRepositoryImpl(DB *gorm.DB) feedback.FeedbackRepository {
 // FindAll implements feedback.FeedbackRepository.
 func (feedbackRepository *FeedbackRepositoryImpl) FindAll(ctx context.Context) ([]modelFeedback.GetAllFeedbackRes, error) {
 
-	var feedbacks []entities.FeedBack
-	err := feedbackRepository.DB.Find(&feedbacks).Error
+	//var feedbacks []modelFeedback.GetAllFeedbackRes
+	var result []modelFeedback.GetAllFeedbackRes
+	err := feedbackRepository.DB.Raw(`SELECT f.*, 
+	c.category_name,
+	r.room_name,
+	r.floor,
+	r.building,
+	u.name,
+	u.url
+	FROM "FEEDBACK" f 
+	LEFT JOIN "CATEGORY" c ON f.category_id = c.id 
+	LEFT JOIN "ROOM" r ON f.room_id = r.id
+	LEFT JOIN "USER" u ON f.user_id = u.id
+	WHERE f.reciever_id IS NULL`).Scan(&result).Error
+
 	if err != nil {
 		return nil, err
 	}
+	for i, feedback := range result {
+		var images []entities.Image
+		var urls []string
+		err = feedbackRepository.DB.Select("url").Where("feedback_id = ?", feedback.ID).Find(&images).Error
 
-	var result []modelFeedback.GetAllFeedbackRes
-	for _, feedback := range feedbacks {
-		f := modelFeedback.GetAllFeedbackRes{
-			ID:             feedback.ID,
-			Name_Feed_Back: feedback.NameFeedBack,
-			Description:    feedback.Description,
-			CategoryID:     feedback.CategoryID,
-			RoomID:         feedback.RoomID,
-			UserID:         feedback.UserID,
+		if err != nil {
+			return nil, err
 		}
+		for _, image := range images {
 
-		result = append(result, f)
+			urls = append(urls, image.Url)
+		}
+		result[i].Urls = urls
 	}
 
 	return result, nil
