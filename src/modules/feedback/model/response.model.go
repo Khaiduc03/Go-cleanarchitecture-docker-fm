@@ -29,6 +29,7 @@ type GetAllFeedbackRes struct {
 	Url            string    `json:"url" validate:"required"`
 	CreateAt       time.Time `json:"created_at"`
 	Urls		   []string  `json:"urls" validate:"required"`
+	
 }
 
 type GetAllHistoryFeedbackRes struct {

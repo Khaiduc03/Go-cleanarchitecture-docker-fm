@@ -207,3 +207,29 @@ func (feedbackRepository *FeedbackRepositoryImpl) CheckRoom(ctx context.Context,
 	}
 	return nil
 }
+
+// func (feedbackRepository *FeedbackRepositoryImpl) RevicerFeedback(ctx context.Context, req modelFeedback.RevicerFeedbackReq) (modelFeedback.GetAllFeedbackRes, error) {
+// 	var feedback entities.FeedBack
+// 	isExistFeedback := feedbackRepository.DB.Where("id = ?", req.Feedback_id).Find(&feedback)
+// 	if isExistFeedback.RowsAffected == 0 {
+// 		return modelFeedback.GetAllFeedbackRes{}, errors.New("feedback not found")
+// 	}
+// 	feedback.RecieverID = uint(req.User_id)
+// 	if req.Option == 1 {
+// 		feedback.Status = "ACCEPT"
+// 		feedback.TimeStarted = feedback.CreatedAt
+// 	} else if req.Option == 2 {
+// 		feedback.Status = "FINISH"
+// 		feedback.TimeFinish = feedback.CreatedAt
+// 	}
+
+// 	err := feedbackRepository.DB.Save(&feedback).Error
+// 	if err != nil {
+// 		return modelFeedback.GetAllFeedbackRes{}, err
+// 	}
+
+// 	var images []entities.Image
+// 	var urls []string
+// 	err = feedbackRepository.DB.Select("url").Where("feedback_id = ?", feedback.ID).Find(&images).Error
+
+// }

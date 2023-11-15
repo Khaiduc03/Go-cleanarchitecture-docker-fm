@@ -30,11 +30,12 @@ func NewFeedbackHandler(feedbackService *FeedBackService, config configuration.C
 func (handler FeedbackHandler) Route(app *fiber.App) {
 	var basePath = utils.GetBaseRoute(handler.Config, "/feedback")
 
-	route := app.Group(basePath, middleware.AuthMiddleware(handler.Config), middleware.RoleMiddleware([]string{"TEACHER"}))
-	route.Get("/", handler.FindAll)
-	route.Get("/history", handler.History)
-	route.Get("/:id", handler.FindById)
-	route.Post("/", handler.Create)
+	route := app.Group(basePath, middleware.AuthMiddleware(handler.Config))
+	route.Get("/", middleware.RoleMiddleware([]string{"STAFF"}), handler.FindAll)
+	route.Get("/history",  middleware.RoleMiddleware([]string{"TEACHER"}),handler.History)
+	route.Get("/:id", middleware.RoleMiddleware([]string{"TEACHER"}) ,handler.FindById)
+	route.Post("/", middleware.RoleMiddleware([]string{"TEACHER"}), handler.Create)
+	route.Put("/", middleware.RoleMiddleware([]string{"STAFF"}) ,handler.RevicerFeedback)
 	// route.Put("/", handler.Update)
 	// route.Delete("/:id", handler.Delete)
 }
@@ -162,5 +163,21 @@ func (handler FeedbackHandler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
 		StatusCode: fiber.StatusOK,
 		Message:    message,
+	})
+}
+
+func (handler FeedbackHandler) RevicerFeedback(c *fiber.Ctx) error {
+	var req modelFeedback.RevicerFeedbackReq
+	userData := c.Locals("user")
+	user := userData.(jwt.MapClaims)
+	if err := c.BodyParser(&req); err != nil {
+		return exception.HandleError(c, err)
+	}
+	req.User_id = uint(user["id"].(float64))
+
+	return c.Status(fiber.StatusOK).JSON(http.HttpResponse{
+		StatusCode: fiber.StatusOK,
+		Message:    "ok",
+		Data:       req,
 	})
 }
